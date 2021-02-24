@@ -1,0 +1,160 @@
+_type: export
+__export_format: 4
+__export_date: 2021-02-24T03:11:34.072Z
+__export_source: insomnia.desktop.app:v2020.5.2
+resources:
+  - _id: req_84c7bec9a2aa48d4917e2af2889db424
+    parentId: fld_dc78daa0d8b94bee981f8ba9fc18305d
+    modified: 1614135670294
+    created: 1614134713047
+    url: "{{ _.Url }}/auth/me"
+    name: Fetch User Profile
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication:
+      type: bearer
+      token: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiOTYwZGVlZWVmNmM0MDEzNmMzODJhZDM2ZmI1OWU2NzcwNzIzZGFjNmRhMmIxZDY4ZTQ0ODUwNDk4Y2QyODU5OGQyYTJiMDBhZDc4ZDNhZjYiLCJpYXQiOiIxNjE0MTM1NjI5LjAzODc4OSIsIm5iZiI6IjE2MTQxMzU2MjkuMDM4Nzk2IiwiZXhwIjoiMTY0NTY3MTYyOS4wMDExMDQiLCJzdWIiOiIyIiwic2NvcGVzIjpbIioiXX0.IM91YUMCm1WT9PbVE7mKoBPZgNimRk1mVvGmvLj-6RI30x0b7HVxtuzyKA_HYuOyMckSRZV4w_t11H7qU6-Ve3qYFoSWr3efnAgWfC7tZGrpQNvv9TjNtGKPI4mSSGyzgnoockloD7sO-ST9SGvWrutaFAMccPC3-8z-B0SaLc_ZTzuSXFrRYIVCQkh7RPEVzebgQ7S8pxWsonbt94ATyqRc9UOdpwI_ioLZ3jgbGXSHXvwrg1IZYrMKU-xjdZtiUN3yyOG2IKIlrYzpStxcVr9SWbE5dA3BdHAtqBsaJXTL-Qt1_c1lztoHzj3NXog-1Q9Nrm-FZupXrG8l34qrQ1EKzdcSx_fJ3TB2CfJacK9eItaJ9Nqf5qskurSb_JAVsfFT-sCQOGHMfSPkNv0YZLIgq7-ghe82s0K3DpAkoYx56NnyaH6visR4FHlW764dR2FsBzKSgX51IGz8vd_bL8gknKer5bUhFpZPw_fHaoqOWeAF7NZ1d5OrLcG6jPWVJUnJpYOCD_MhGjylsTGTgPukwLlXXsUMCWhnKBvdaf6H5AnpA0rqxvjkkLmpWLOz6mKVXBpXqoweyGRFxBbiG4JFC5WELT7yacHaVt-bJ7OuqmgQc8KEF-5fM5KgOYMRa6pxa-hvVNQXRQeA2x47fbQ2XOoX8UBssOedfKtApE4
+    metaSortKey: -1614134713047
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_dc78daa0d8b94bee981f8ba9fc18305d
+    parentId: wrk_02e42962fdba41cbbd526130e072c860
+    modified: 1613706837310
+    created: 1613706837310
+    name: Authentication
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1613706837310
+    _type: request_group
+  - _id: wrk_02e42962fdba41cbbd526130e072c860
+    parentId: null
+    modified: 1613706670934
+    created: 1613706670934
+    name: Modullo ( SmartTech)
+    description: ""
+    scope: null
+    _type: workspace
+  - _id: req_29eb00bcb4e74212b26029eddc244fd8
+    parentId: fld_dc78daa0d8b94bee981f8ba9fc18305d
+    modified: 1614131872595
+    created: 1613706843533
+    url: "{{ _.Url }}/auth/token"
+    name: Login
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+         "grant_type": "password",
+           "scope": "*",
+        	 "username": "ayotomideaina@gmail.com",
+        	"password": "password",
+          "client_id": "{{client_id}}",
+          "client_secret": "{{client_secret}}"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_ff89ca5d258941a993db717afa950db3
+    authentication: {}
+    metaSortKey: -1613706843533
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_eefd46a47b05480798e1e6582bcf70f4
+    parentId: fld_dc78daa0d8b94bee981f8ba9fc18305d
+    modified: 1614135404453
+    created: 1614083823592
+    url: "{{ _.Url }}/auth/register"
+    name: Register
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+         "scope": "*",
+         "email": "test@gmail.com",
+        	"password": "password",
+        	"first_name": "Ayotomide",
+        	"last_name" : "Aina",
+        	"phone_number" : "08179009377",
+          "client_id": "{{ _.client_id }}",
+          "client_secret": "{{ _.client_secret }}"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_ff89ca5d258941a993db717afa950db3
+    authentication: {}
+    metaSortKey: -1613706843483
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_a06816df0c9b10de2d3fafbcc707231bd8f48d0f
+    parentId: wrk_02e42962fdba41cbbd526130e072c860
+    modified: 1613706686546
+    created: 1613706670976
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: {}
+    color: null
+    isPrivate: false
+    metaSortKey: 1613706670976
+    _type: environment
+  - _id: jar_a06816df0c9b10de2d3fafbcc707231bd8f48d0f
+    parentId: wrk_02e42962fdba41cbbd526130e072c860
+    modified: 1613706670979
+    created: 1613706670979
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: spc_a0c689215ee84a09882352cb7ffa9cd8
+    parentId: wrk_02e42962fdba41cbbd526130e072c860
+    modified: 1613706670938
+    created: 1613706670938
+    fileName: Modullo ( SmartTech)
+    contents: ""
+    contentType: yaml
+    _type: api_spec
+  - _id: env_2e5efa8af2d040fd93afb0a82d473dea
+    parentId: env_a06816df0c9b10de2d3fafbcc707231bd8f48d0f
+    modified: 1614094338489
+    created: 1613706691514
+    name: Modullo Local
+    data:
+      Url: https://api.modullo.test/v1
+      client_id: "1"
+      client_secret: HTcWok7kFViJHkKMJrsE2OLxiNPa7pDq0Occk6Gv
+    dataPropertyOrder:
+      "&":
+        - Url
+        - client_id
+        - client_secret
+    color: "#c42121"
+    isPrivate: false
+    metaSortKey: 1613706691514
+    _type: environment
