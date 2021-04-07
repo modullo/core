@@ -16,16 +16,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('', function(){
   return 'Welcome to modullo api core';
 });
+
+
 Route::group(['prefix' => 'v1'], static function(){
           Route::get('', function(){
             return 'Welcome to modullo api core';
           });
-          Route::group(['namespace' => 'Authentication','prefix' => 'auth'], static function(){
-            Route::post('register',['middleware' => ['client'],'uses' => 'AuthController@register']);
-                Route::group(['middleware' => ['auth']],static function(){
-                    Route::get('me','AuthController@getUser');
-              });
+    Route::group(['namespace' => 'Authentication','prefix' => 'auth'], static function(){
+      Route::post('setup','AuthController@setup');
+      Route::post('register',['middleware' => ['client'],'uses' => 'AuthController@register']);
+          Route::group(['middleware' => ['auth']],static function(){
+              Route::get('me','AuthController@getUser');
         });
+    });
 });
 
 

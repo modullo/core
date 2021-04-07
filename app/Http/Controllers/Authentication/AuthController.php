@@ -6,6 +6,7 @@ use App\Classes\AuthClass;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Laravel\Passport\ClientRepository;
 
 class AuthController extends Controller
 {
@@ -17,6 +18,22 @@ class AuthController extends Controller
 
   public function __construct(){
     $this->authClass  = new AuthClass;
+  }
+
+
+  public function setup(){
+      try {
+        $name = config('app.name').' Personal Access Client';
+        $redirect = env('APP_URL') ?? 'http://localhost';
+        $client =   (new ClientRepository())->createPasswordGrantClient(null,$name,$redirect);
+        return response()->created( 'requirements fully setup',['client_id' => $client->id,'client_secret'
+        => $client->secret],'client');
+
+      }
+      catch(\Exception $e){
+        throw new Exception($e->getMessage());
+      }
+
   }
 
 
