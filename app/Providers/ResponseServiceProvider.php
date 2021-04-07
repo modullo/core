@@ -20,7 +20,7 @@ class ResponseServiceProvider extends ServiceProvider
           $key =>  $data
         ]
       ];
-      return $factory->make($format);
+      return $factory->make($format,201);
     });
 
     $factory->macro('updated', function (string $message = '', $data = null, $key=null) use ($factory){
@@ -33,7 +33,7 @@ class ResponseServiceProvider extends ServiceProvider
         ]
       ];
 
-      return $factory->make($format);
+      return $factory->make($format,201);
     });
 
     $factory->macro('fetch', function (string $message = '', $data = null, $key =  null) use ($factory){
@@ -46,7 +46,7 @@ class ResponseServiceProvider extends ServiceProvider
         ]
       ];
 
-      return $factory->make($format);
+      return $factory->make($format,200);
     });
 
     $factory->macro('deleted', function (string $message = '') use ($factory){
@@ -58,7 +58,7 @@ class ResponseServiceProvider extends ServiceProvider
         ]
       ];
 
-      return $factory->make($format);
+      return $factory->make($format,204);
     });
   }
 
