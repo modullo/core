@@ -26,9 +26,10 @@ $app = new Laravel\Lumen\Application(
 );
 $app->instance('path.config', app()->basePath() . DIRECTORY_SEPARATOR . 'config');
 $app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');
- $app->withFacades();
 
- $app->withEloquent();
+$app->withFacades();
+
+$app->withEloquent();
 
 $app->bind(\Illuminate\Contracts\Routing\UrlGenerator::class, function ($app) {
   return new \Laravel\Lumen\Routing\UrlGenerator($app);
@@ -76,6 +77,12 @@ $app->configure('system');
 $app->configure('filesystems');
 $app->configure('queue');
 $app->configure('mail');
+$app->configure('setup');
+$app->configure('system_permissions');
+$app->configure('tenant_permissions');
+$app->configure('user_permissions');
+$app->configure('roles');
+$app->configure('permission');
 $app->configure('services');
 
 /*
@@ -93,6 +100,8 @@ $app->configure('services');
  $app->routeMiddleware([
      'auth' => App\Http\Middleware\Authenticate::class,
      'client' => \App\Http\Middleware\ClientMiddleware::class,
+     'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
+     'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class,
  ]);
 
 /*
@@ -120,6 +129,7 @@ $app->register(Sentry\Laravel\ServiceProvider::class);
 $app->register(\Illuminate\Mail\MailServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
 $app->register(\Fedeisas\LaravelMailCssInliner\LaravelMailCssInlinerServiceProvider::class);
+$app->register(Spatie\Permission\PermissionServiceProvider::class);
 Dusterio\LumenPassport\LumenPassport::routes($app->router, ['prefix' => 'v1/auth'] );
 
 
