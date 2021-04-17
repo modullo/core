@@ -29,6 +29,22 @@ Route::group(['prefix' => 'v1'], static function(){
               Route::get('me','AuthController@getUser');
         });
     });
+
+
+  Route::group(['middleware' => ['auth']], function () {
+    Route::group(['middleware' => ['role:overlord']], function () {
+      Route::get('/test-overlord-rights',function(){
+        return 'hello i am overlord';
+      });
+    });
+
+    Route::group(['middleware' => ['role:administrative|overlord']], function () {
+      Route::get('/test-admin-rights',function(){
+        return 'hello i am overlord or administrative';
+      });
+    });
+  });
+
 });
 
 
