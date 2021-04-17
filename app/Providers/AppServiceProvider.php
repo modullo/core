@@ -5,6 +5,7 @@ namespace App\Providers;
 use Hashids\Hashids;
 use Illuminate\Support\ServiceProvider;
 use Dusterio\LumenPassport\LumenPassport;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
   public function register()
   {
 
-
+      Schema::defaultStringLength(191);
     $this->app->singleton(Hashids::class, function () {
       return new Hashids('Modullo Production API', 10);
     });
