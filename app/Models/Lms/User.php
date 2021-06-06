@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Lms;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -15,23 +15,17 @@ use App\Traits\UuidGenerator;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
-    use Authenticatable,  Authorizable, HasFactory, SoftDeletes, HasRoles , HasApiTokens, UuidGenerator;
+    use Authenticatable,  Authorizable, HasFactory, SoftDeletes, HasRoles , HasApiTokens;
 
 
     protected $guarded = [];
 
+    protected $guard_name = 'lms_users';
+
+    protected $table = 'lms_users';
 
     protected $hidden = ['password', 'remember_token'];
 
-    /**
-     * Adds a 'name' attribute on the model
-     *
-     * @return string
-     */
-    public function getNameAttribute(): string
-    {
-        return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
-    }
 
 
 }

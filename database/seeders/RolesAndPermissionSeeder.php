@@ -16,7 +16,7 @@ class RolesAndPermissionSeeder extends Seeder
     // Reset cached roles and permissions
     app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-
+    //System Roles and Permission Setup
     $permissions = config('system_permissions.permissions');
     $systemSetup = config('setup');
     $roles = config('roles.roles');
@@ -37,21 +37,15 @@ class RolesAndPermissionSeeder extends Seeder
       app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 
-    $tenant_permissions = config('tenant_permissions.permissions');
 
-    foreach ($tenant_permissions as $permission) {
-      $permission = Permission::updateOrCreate(['name' => $permission['permission']],['name' => $permission['permission'],'description' => $permission['description'],'guard_name' => 'api','level' => $permission['level'],'display_name' => $permission['display_name'] ]);
-      app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-    }
+    //Lms Roles and Permission System Setup
 
+      $lmsRoles = config('lms_roles.roles');
 
-    $user_permissions = config('user_permissions.permissions');
-
-    foreach ($user_permissions as $permission) {
-      $permission = Permission::updateOrCreate(['name' => $permission['permission']],['name' => $permission['permission'],'description' => $permission['description'],'guard_name' => 'api','level' => $permission['level'],'display_name' => $permission['display_name'] ]);
-      app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-    }
-
+      foreach ($lmsRoles as $role) {
+          $role = Role::updateOrCreate(['name' => $role['name'],'guard_name' => $role['guard_name'],'description' =>
+              $role['description'],'display_name' => $role['display_name'],"level" => $role['level']]);
+      }
   }
 
 }

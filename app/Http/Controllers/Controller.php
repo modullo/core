@@ -12,7 +12,7 @@ class Controller extends BaseController
    *
    * @var array
    */
-  protected $data = [];
+  protected array $data = [];
 
   /**
    * An associative array of request field names, and the model keys that should be used when trying to

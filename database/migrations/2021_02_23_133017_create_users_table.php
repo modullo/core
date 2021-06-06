@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('phone_number')->nullable();
             $table->string('password');
             $table->boolean('is_verified')->default(false);
+            $table->string('user_type')->default('modullo_user');
             $table->softDeletes();
             $table->timestamps();
         });

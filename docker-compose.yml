@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  core:
+    build:
+      context: ./
+      args:
+        - user=tomideaina
+        - uid=1000
+    container_name: core
+    working_dir: /var/www/api/
+    env_file:
+      - .env
+    volumes:
+      - "./:/var/www/api"
+    restart: unless-stopped
+
+
+  core_web:
+    restart: unless-stopped
+    image: nginx:1.17-alpine
+    ports:
+      - "5002:80"
+    container_name: core_web
+    depends_on:
+      - core
+    volumes:
+      - ./:/var/www/api
+      - ./nginx/core.conf:/etc/nginx/conf.d/default.conf
+
+
+

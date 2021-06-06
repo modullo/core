@@ -84,6 +84,7 @@ $app->configure('user_permissions');
 $app->configure('roles');
 $app->configure('permission');
 $app->configure('services');
+$app->configure('lms_roles');
 
 /*
 |--------------------------------------------------------------------------
@@ -102,6 +103,7 @@ $app->configure('services');
      'client' => \App\Http\Middleware\ClientMiddleware::class,
      'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
      'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class,
+     'lms_user' => \App\Http\Middleware\LmsUserMiddleware::class
  ]);
 
 /*

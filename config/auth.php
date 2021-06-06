@@ -63,7 +63,12 @@ return [
       'users' => [
         'driver' => 'eloquent',
         'model'  => \App\Models\User::class
-      ]
+      ],
+
+     'lms_users' => [
+        'driver' => 'eloquent',
+        'model'  => \App\Models\Lms\User::class
+    ],
     ],
 
     /*
