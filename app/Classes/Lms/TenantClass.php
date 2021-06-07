@@ -19,7 +19,6 @@ use App\Classes\ModulloClass;
 
 class TenantClass extends ModulloClass
 {
-    use updateModel;
     protected array $updateFields = [
         'country' => 'country',
         'company_name' => 'company_name',

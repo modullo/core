@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Lms\Courses;
 use App\Models\Lms\Programs;
 use App\Models\Lms\User;
 use App\Models\Lms\Tenants;
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
       User::observe(UuidObserver::class);
       Tenants::observe(UuidObserver::class);
       Programs::observe(UuidObserver::class);
+      Courses::observe(UuidObserver::class);
     // Somewhere in your application service provider or bootstrap process
       LumenPassport::allowMultipleTokens();
       # register the routes

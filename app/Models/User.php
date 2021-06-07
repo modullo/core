@@ -18,6 +18,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     use Authenticatable,  Authorizable, HasFactory, SoftDeletes, HasRoles , HasApiTokens, UuidGenerator;
 
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $guarded = [];
 
 

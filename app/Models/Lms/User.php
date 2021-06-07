@@ -20,7 +20,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     protected $guarded = [];
 
-    protected $guard_name = 'lms_users';
+    protected string $guard_name = 'lms_users';
 
     protected $table = 'lms_users';
 

@@ -50,12 +50,6 @@ Route::group(['prefix' => 'v1'], static function () {
         Route::group(['namespace' => 'Authentication', 'prefix' => 'auth'], static function () {
             Route::post('setup/{provider}', 'AuthController@setup');
             Route::group(['middleware' => ['auth:api']], static function () {
-                Route::group(['prefix' => 'tenants'],function(){
-                    Route::post('','TenantsController@create');
-                    Route::put('{tenantId}','TenantsController@update');
-                    Route::get('{tenantId}','TenantsController@single');
-                });
-
                 Route::get('me', 'AuthController@getUser');
             });
 
@@ -72,11 +66,19 @@ Route::group(['prefix' => 'v1'], static function () {
 
 
         Route::group(['middleware' => ['lms_user','auth:api']], static function () {
+
             Route::group(['prefix' => 'programs'],function(){
                 Route::get('','ProgramsController@index');
                 Route::post('','ProgramsController@create');
-                Route::put('{tenantId}','ProgramsController@update');
-                Route::get('{tenantId}','ProgramsController@single');
+                Route::put('{programId}','ProgramsController@update');
+                Route::get('{programId}','ProgramsController@single');
+            });
+
+            Route::group(['prefix' => 'courses'],function(){
+                Route::get('get/{programId}','CoursesController@index');
+                Route::post('create/{programId}','CoursesController@create');
+                Route::put('{coursesId}','CoursesController@update');
+                Route::get('{coursesId}','CoursesController@single');
             });
         });
 
