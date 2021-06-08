@@ -17,7 +17,6 @@ class TenantsResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'user' => new UserResource($this->lmsUser),
             'company'=> $this->company_name,
             'country' => $this->country,
             'created_at' => (string) $this->created_at->toIso8601String(),

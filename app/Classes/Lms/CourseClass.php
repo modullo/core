@@ -23,6 +23,16 @@ class CourseClass
         $this->tenants = new Tenants;
     }
 
+    protected array $updateFields = [
+        'title' => 'title',
+        'description' => 'description',
+        'course_image' => 'image',
+        'duration' => 'video_overview',
+        'skills_to_be_gained' => 'skills_to_be_gained',
+        'course_state' => 'course_state',
+        'price' => 'price',
+    ];
+
     public function createCourse(array $data, string $programId, object $user)
     {
         $course = null;
@@ -59,6 +69,23 @@ class CourseClass
         });
 
         return response()->created('Course created successfully', new CourseResource($course), "course");
+    }
+
+
+    public function showCourse(string $courseId, object $user)
+    {
+        $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+        if (!$tenant) {
+            throw new ResourceNotFoundException('unfortunately the tenant could not found');
+        }
+        $filter = $this->courses->newQuery()->where('tenant_id',$tenant->id)->whereId($courseId);
+        $course = $filter->first();
+        if ($course) {
+            $resource = new CourseResource($course);
+            return  response()->fetch("course fetched successfully", $resource, "course");
+        } else {
+            throw new ResourceNotFoundException("Course not found");
+        }
     }
 
 }

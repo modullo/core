@@ -26,6 +26,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     protected $hidden = ['password', 'remember_token'];
 
+    public function tenant(){
+        return $this->hasOne(Tenants::class, 'lms_user_id');
+    }
+
+
 
 
 }

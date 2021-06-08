@@ -15,12 +15,21 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $response = [
             'id'=> $this->uuid,
             'email'=>$this->email,
             'user_type'=>$this->user_type,
             "role_display_name" =>ucwords(join(" ",explode("_",$this->getRoleNames()[0]))) ?? "Not Available",
             "role" => $this->getRoleNames()[0] ?? null,
+            "password" => $this->password,
         ];
+        if ($this->getRoleNames()[0] === 'lms_tenant'){
+            $response['tenant'] = new TenantsResource($this->tenant);
+        }
+        elseif($this->getRoleNames()[0] === 'lms_learner'){
+            $response['tenant'] = $this->learner;
+        }
+
+        return $response;
     }
 }

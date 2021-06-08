@@ -10,6 +10,7 @@ use App\Models\Lms\User;
 use App\Models\Lms\Tenants;
 use App\Models\Role;
 use App\Traits\updateModel;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -64,7 +65,7 @@ class TenantClass extends ModulloClass
         }
         $this->updateModelAttributes($tenant, $data);
         $tenant->save();
-        $tenant = new TenantsResource($tenant);
+        $tenant = new UserResource($user);
         return \response()->updated('tenant updated successfully',$tenant,'tenant');
     }
 
@@ -75,7 +76,7 @@ class TenantClass extends ModulloClass
         if ($tenant === null){
             throw new NotFoundResourceException('could not find the given tenant');
         }
-        $tenant = new TenantsResource($tenant);
+        $tenant = new UserResource($user);
         return \response()->fetch('tenant fetched successfully',$tenant,'tenant');
     }
 }

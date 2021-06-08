@@ -49,13 +49,13 @@ Route::group(['prefix' => 'v1'], static function () {
     Route::group(['namespace' => 'Lms','prefix' => 'lms'],function(){
         Route::group(['namespace' => 'Authentication', 'prefix' => 'auth'], static function () {
             Route::post('setup/{provider}', 'AuthController@setup');
-            Route::group(['middleware' => ['auth:api']], static function () {
+            Route::group(['middleware' => ['lms_user','auth:api']], static function () {
                 Route::get('me', 'AuthController@getUser');
             });
 
         });
 
-        Route::group(['middleware' => ['auth:api']], static function () {
+        Route::group(['middleware' => ['lms_user','auth:api']], static function () {
             Route::group(['prefix' => 'tenants'],function(){
                 Route::post('','TenantsController@create');
                 Route::put('{tenantId}','TenantsController@update');
