@@ -5,6 +5,7 @@ namespace App\Classes\Lms;
 use App\Http\Resources\Lms\UserResource;
 use App\Models\Lms\User;
 use Exception;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
