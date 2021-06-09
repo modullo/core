@@ -72,7 +72,7 @@ class ProgramClass extends ModulloClass
                 'title' => $title,
                 'description' => $description,
                 'image' => $image,
-                'type' => $type,
+//                'type' => $type,
             ]);
             $program = $this->programs->newQuery()->where('id', $program->id)->first();
             //store program subscription

@@ -31,7 +31,7 @@ class ProgramsController extends Controller
             'description' => 'required|string',
             'image' => 'required|string',
             'video_overview' => 'nullable|string',
-            'type' => 'required|in:paid,free',
+            'type' => 'nullable|in:private,public',
         ]);
 
         return  $this->programClass->createProgram($request->all(), $user);
