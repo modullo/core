@@ -4,7 +4,17 @@
 namespace App\Classes\Lms;
 
 
-class ModulesClass
+use App\Classes\ModulloClass;
+
+class ModulesClass extends ModulloClass
 {
+
+    public function __construct(){
+
+    }
+
+    public function createModule(){
+
+    }
 
 }

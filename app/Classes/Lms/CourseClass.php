@@ -113,7 +113,7 @@ class CourseClass extends ModulloClass
         if (!$tenant) {
             throw new ResourceNotFoundException('unfortunately the tenant could not found');
         }
-        $filter = $this->courses->newQuery()->where('tenant_id', $tenant->id)->whereId($courseId);
+        $filter = $this->courses->newQuery()->where('tenant_id', $tenant->id)->where('uuid',$courseId);
         $course = $filter->with('program')->first();
         if ($course) {
             $resource = new CourseResource($course);
