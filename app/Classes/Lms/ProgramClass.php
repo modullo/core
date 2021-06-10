@@ -21,7 +21,7 @@ class ProgramClass extends ModulloClass
         'description' => 'description',
         'image' => 'image',
         'video_overview' => 'video_overview',
-        'type' => 'type',
+        'visibility_type' => 'visibility_type',
         'active' => 'active',
         'price' => 'price',
     ];
@@ -65,14 +65,14 @@ class ProgramClass extends ModulloClass
         if (!$tenant){
             throw new NotFoundException('unfortunately the tenant could not be found');
         }
-        ['title'=> $title,'description' =>$description,'type' =>$type,'image' => $image] = $data;
-        DB::transaction(function () use ($title,$description,$type, &$program, $tenant,$image) {
+        ['title'=> $title,'description' =>$description,'visibility_type' =>$visibility_type,'image' => $image] = $data;
+        DB::transaction(function () use ($title,$description,$visibility_type, &$program, $tenant,$image) {
             $program = $this->programs->newQuery()->create([
                 "tenant_id" => $tenant->id,
                 'title' => $title,
                 'description' => $description,
                 'image' => $image,
-//                'type' => $type,
+                'visibility_type' => $visibility_type,
             ]);
             $program = $this->programs->newQuery()->where('id', $program->id)->first();
             //store program subscription

@@ -21,7 +21,7 @@ class ProgramsResource extends JsonResource
             'description' => $this->description,
             'image' => $this->image,
             'video_overview' => $this->video_overview,
-            'type' => $this->type,
+            'visibility_type' => $this->visibility_type,
             'price' => $this->price,
             'created_at' => (string) $this->created_at->toIso8601String(),
             'updated_at' => (string) $this->updated_at->toIso8601String(),

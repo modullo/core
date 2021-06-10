@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CourseResource extends JsonResource
 {
+
     /**
      * Transform the resource into an array.
      *
@@ -18,6 +19,7 @@ class CourseResource extends JsonResource
         return [
             'id' => $this->uuid,
             'title' => $this->title,
+            'slug' => $this->slug,
             "program" => new ProgramsResource($this->program),
             "description" => $this->description,
             "course_image" => $this->course_image,

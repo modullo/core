@@ -20,7 +20,7 @@ class CoursesController extends Controller
             "course_image" => "required",
             "duration" => "required",
             "skills_to_be_gained" => "required",
-            "course_state" => "required",
+            "course_state" => "required|in:draft,published",
             "course_video" => "nullable",
             'slug' => 'nullable|string',
             'description' => 'required|string',

@@ -23,7 +23,7 @@ class CreateLmsProgramsTable extends Migration
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->string('video_overview')->nullable();
-            $table->enum('type',["paid","free"])->default('free');
+            $table->enum('visibility_type',["public","private"])->default('public');
             $table->decimal('price')->default(0);
             $table->softDeletes();
             $table->timestamps();

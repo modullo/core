@@ -31,7 +31,7 @@ class ProgramsController extends Controller
             'description' => 'required|string',
             'image' => 'required|string',
             'video_overview' => 'nullable|string',
-            'type' => 'nullable|in:private,public',
+            'visibility_type' => 'required|in:private,public',
         ]);
 
         return  $this->programClass->createProgram($request->all(), $user);
@@ -52,10 +52,10 @@ class ProgramsController extends Controller
             'description' => 'nullable|string',
             'image' => 'nullable|string',
             'video_overview' => 'nullable|string',
-            'type' => 'nullable|in:paid,free',
+            'visibility_type' => 'nullable|in:private,public',
 
         ]);
-        $programData = $request->only(['title', 'description', 'image', 'video_overview', 'type', 'price']);
+        $programData = $request->only(['title', 'description', 'image', 'video_overview', 'visibility_type']);
         return $this->programClass->updateProgram($programData, $programId);
     }
 }
