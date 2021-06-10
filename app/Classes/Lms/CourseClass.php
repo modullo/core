@@ -41,12 +41,12 @@ class CourseClass extends ModulloClass
      * @param string|null $programId
      * @param string|null $course_state
      */
-    public function fetchAllCourses(object $user,?string $programId = null, ?string $course_state = 'all')
+    public function fetchAllCourses(string $search,object $user,?string $programId = null, ?string $course_state = 'all',int $limit = 100)
     {
         $builder = $this->courses->newQuery();
         if ($programId){
             $program = $this->programs->newQuery()->where('uuid',$programId)->firstOrFail();
-            $builder = $builder->where('program_id',$programId);
+            $builder = $builder->where('program_id',$program->id);
         }
         $builder->where('tenant_id',$user->id);
         switch ($course_state){
@@ -60,7 +60,9 @@ class CourseClass extends ModulloClass
             default:
                 break;
         }
-        $builder = $builder->get();
+        $builder = $builder
+            ->oldest('created_at')
+            ->paginate($limit);
         $resource = CourseResource::collection($builder);
         return response()->fetch('courses fetched successfully',$resource,'courses');
     }

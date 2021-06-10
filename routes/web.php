@@ -75,10 +75,15 @@ Route::group(['prefix' => 'v1'], static function () {
             });
 
             Route::group(['prefix' => 'courses'],function(){
-                Route::get('get/{programId}','CoursesController@index');
+                Route::get('all','CoursesController@all');
+                Route::get('all/{programId}','CoursesController@index');
                 Route::post('create/{programId}','CoursesController@create');
                 Route::put('{coursesId}','CoursesController@update');
                 Route::get('{coursesId}','CoursesController@single');
+            });
+
+            Route::group(['prefix' => 'assets'],function(){
+                Route::get('file/custom/upload','AssetsController@customUpload');
             });
         });
 

@@ -13,6 +13,19 @@ class CoursesController extends Controller
         $this->courseClass = new CourseClass;
     }
 
+    public function index(Request $request,string $programId){
+        $user = $request->user();
+        $search = $request->query('search') ?? '';
+        $limit = $request->query('limit', 100);
+        return $this->courseClass->fetchAllCourses($search, $user,$programId,'all',$limit);
+    }
+    public function all(Request $request){
+        $user = $request->user();
+        $search = $request->query('search') ?? '';
+        $limit = $request->query('limit', 100);
+        return $this->courseClass->fetchAllCourses($search, $user,null,'all',$limit);
+    }
+
     public function create(Request $request){
         $user = $request->user();
         $this->validate($request, [
