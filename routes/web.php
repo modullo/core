@@ -83,7 +83,7 @@ Route::group(['prefix' => 'v1'], static function () {
             });
 
             Route::group(['prefix' => 'assets'],function(){
-                Route::get('file/custom/upload','AssetsController@customUpload');
+                Route::post('custom/upload','AssetsController@customUpload');
             });
         });
 

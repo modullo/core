@@ -13,4 +13,17 @@ class AssetsController extends Controller
     public function __construct(){
         $this->assetsClass = new AssetsClass;
     }
+
+
+    /**
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function customUpload(Request $request)
+    {
+        $this->validate($request, [
+            "asset_file" => "required|file",
+        ]);
+        return $this->assetsClass->storeToS3($request);
+
+    }
 }
