@@ -20,7 +20,7 @@ class CourseResource extends JsonResource
             'id' => $this->uuid,
             'title' => $this->title,
             'slug' => $this->slug,
-            "program" => new ProgramsResource($this->program),
+            "program" => new ProgramsResource($this->whenLoaded('program')),
             "description" => $this->description,
             "course_image" => $this->course_image,
             "duration" => $this->duration,

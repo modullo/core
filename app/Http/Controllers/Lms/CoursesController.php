@@ -31,7 +31,7 @@ class CoursesController extends Controller
         $this->validate($request, [
             "title" => "required",
             "course_image" => "required",
-            "duration" => "required",
+            "duration" => "required|string",
             "skills_to_be_gained" => "required",
             "course_state" => "required|in:draft,published",
             "course_video" => "nullable",
@@ -42,5 +42,29 @@ class CoursesController extends Controller
         ]);
 
         return $this->courseClass->createCourse($request->all(),$request->programId, $user);
+    }
+
+    public function update(Request $request, string $courseId){
+        $this->validate($request, [
+            "title" => "nullable|string",
+            "course_image" => "nullable|string",
+            "duration" => "nullable|string",
+            "skills_to_be_gained" => "nullable",
+            "course_state" => "nullable|in:draft,published",
+            "course_video" => "nullable",
+            'slug' => 'nullable|string',
+            'description' => 'nullable|string',
+            'course_level' => 'nullable|in:compulsory,elective',
+
+        ]);
+
+        return $this->courseClass->updateCourse($request->courseId,$request->all());
+    }
+
+
+    public function single(Request $request,string $courseId){
+        $user = $request->user();
+
+        return $this->courseClass->showCourse($courseId,$user);
     }
 }

@@ -10,7 +10,7 @@ class Courses extends Model
 
     protected $guarded = [];
 
-    public function programs(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function program(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Programs::class);
     }

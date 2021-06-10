@@ -114,7 +114,7 @@ class CourseClass extends ModulloClass
             throw new ResourceNotFoundException('unfortunately the tenant could not found');
         }
         $filter = $this->courses->newQuery()->where('tenant_id', $tenant->id)->whereId($courseId);
-        $course = $filter->first();
+        $course = $filter->with('program')->first();
         if ($course) {
             $resource = new CourseResource($course);
             return response()->fetch("course fetched successfully", $resource, "course");
@@ -125,13 +125,12 @@ class CourseClass extends ModulloClass
 
     public function updateCourse(string $courseId, array $data)
     {
-        $course = $this->courses->newQuery()->where('uuid', $courseId)->first();
+        $course = $this->courses->newQuery()->where('uuid', $courseId)->with('program')->first();
         if ($course === null) {
             throw new NotFoundResourceException('unfortunately we could not find the given course');
         }
         $this->updateModelAttributes($course, $data);
         $course->save();
-
         $course = new CourseResource($course);
         return response()->updated('course updated successfully', $course, 'course');
 

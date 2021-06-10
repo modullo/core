@@ -78,8 +78,16 @@ Route::group(['prefix' => 'v1'], static function () {
                 Route::get('all','CoursesController@all');
                 Route::get('all/{programId}','CoursesController@index');
                 Route::post('create/{programId}','CoursesController@create');
-                Route::put('{coursesId}','CoursesController@update');
-                Route::get('{coursesId}','CoursesController@single');
+                Route::put('{courseId}','CoursesController@update');
+                Route::get('{courseId}','CoursesController@single');
+            });
+
+
+            Route::group(['prefix' => 'modules'],function(){
+                Route::get('all/{courseId}','ModulesController@index');
+                Route::post('create/{courseId}','ModulesController@create');
+                Route::put('{moduleId}','ModulesController@update');
+                Route::get('{moduleId}','ModulesController@single');
             });
 
             Route::group(['prefix' => 'assets'],function(){
