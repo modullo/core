@@ -22,7 +22,7 @@ class CourseClass extends ModulloClass
     protected array $updateFields = [
         'title' => 'title',
         'description' => 'description',
-        'course_image' => 'image',
+        'course_image' => 'course_image',
         'duration' => 'video_overview',
         'skills_to_be_gained' => 'skills_to_be_gained',
         'course_state' => 'course_state',

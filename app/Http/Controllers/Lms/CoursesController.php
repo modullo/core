@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Lms;
 use App\Classes\Lms\CourseClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
+
 class CoursesController extends Controller
 {
     private CourseClass $courseClass;
@@ -25,7 +27,6 @@ class CoursesController extends Controller
         $limit = $request->query('limit', 100);
         return $this->courseClass->fetchAllCourses($search, $user,null,'all',$limit);
     }
-
     public function create(Request $request){
         $user = $request->user();
         $this->validate($request, [
@@ -44,6 +45,9 @@ class CoursesController extends Controller
         return $this->courseClass->createCourse($request->all(),$request->programId, $user);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function update(Request $request, string $courseId){
         $this->validate($request, [
             "title" => "nullable|string",
@@ -60,8 +64,6 @@ class CoursesController extends Controller
 
         return $this->courseClass->updateCourse($request->courseId,$request->all());
     }
-
-
     public function single(Request $request,string $courseId){
         $user = $request->user();
 
