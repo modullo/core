@@ -38,7 +38,7 @@ class RolesAndPermissionSeeder extends Seeder
     }
 
 
-    //Lms Roles and Permission System Setup
+    //LMS Roles and Permission System Setup
 
       $lmsRoles = config('lms_roles.roles');
 

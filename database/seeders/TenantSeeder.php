@@ -15,7 +15,7 @@ class TenantSeeder extends Seeder
 
     public function run()
     {
-        $user = User::updateOrCreate(["email" => 'tomide@hostville.website'],
+        $user = User::updateOrCreate(["email" => 'gbengaspeaks@gmail.com'],
         [
             "email" => 'gbengaspeaks@gmail.com',
             "password" => Hash::make('password'),
