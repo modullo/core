@@ -17,7 +17,6 @@ public_html/hot
 
 storage/*.key
 .env
-composer.lock
 modullo.yml
 ansible-automation
 Homestead.yaml
