@@ -17,7 +17,7 @@ class TenantSeeder extends Seeder
     {
         $user = User::updateOrCreate(["email" => 'tomide@hostville.website'],
         [
-            "email" => 'tomide@hostville.website',
+            "email" => 'gbengaspeaks@gmail.com',
             "password" => Hash::make('password'),
         ]
         );
@@ -28,7 +28,7 @@ class TenantSeeder extends Seeder
         $user->assignRole($role);
 
         $tenant = Tenants::updateOrCreate(['lms_user_id' => $user->id],[
-            'company_name' => 'hostville',
+            'company_name' => 'transformation teachers network',
         ]);
 
     }

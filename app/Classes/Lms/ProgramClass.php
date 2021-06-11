@@ -23,7 +23,6 @@ class ProgramClass extends ModulloClass
         'video_overview' => 'video_overview',
         'visibility_type' => 'visibility_type',
         'active' => 'active',
-        'price' => 'price',
     ];
     private User $user;
     private Tenants $tenants;
