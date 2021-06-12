@@ -10,7 +10,7 @@
         "ext-json": "*",
         "doctrine/dbal": "^2.10",
         "dusterio/lumen-passport": "^0.3.4",
-        "fedeisas/laravel-mail-css-inliner": "^3.0",
+        "fedeisas/laravel-mail-css-inliner": "^4.0",
         "flipbox/lumen-generator": "^8.2.0",
         "illuminate/redis": "8.0.*",
         "laravel/helpers": "^1.2",
