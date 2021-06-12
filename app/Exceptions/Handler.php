@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use App\Support\Responses\Codes;
+use App\support\Responses\Codes;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,7 +21,7 @@ class Handler extends ExceptionHandler
      *
      * @var array
      */
-  protected  $dontReport = [
+  protected $dontReport = [
     AuthorizationException::class,
     HttpException::class,
     ModelNotFoundException::class,

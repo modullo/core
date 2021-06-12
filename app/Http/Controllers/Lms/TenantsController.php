@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\Lms;
 
 
-use App\Classes\Lms\TenantClass;
+use App\Classes\LMS\TenantClass;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
