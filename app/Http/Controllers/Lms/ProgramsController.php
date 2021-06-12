@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Lms;
 
-use App\Classes\Lms\ProgramClass;
+use App\Classes\LMS\ProgramClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;

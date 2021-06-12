@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Lms;
 
-use App\Classes\Lms\AssetsClass;
+use App\Classes\LMS\AssetsClass;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
