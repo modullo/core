@@ -18,7 +18,7 @@ class TenantSeeder extends Seeder
         $user = User::updateOrCreate(["email" => 'gbengaspeaks@gmail.com'],
         [
             "email" => 'gbengaspeaks@gmail.com',
-            "password" => Hash::make('password'),
+            "password" => Hash::make('ZSf_q36PedG78E8B'),
         ]
         );
         $role = Role::where('name','lms_tenant')->first();

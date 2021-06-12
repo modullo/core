@@ -16,7 +16,7 @@ public_html/storage
 public_html/hot
 
 .env
-modullo.yml
+api.yml
 ansible-automation
 Homestead.yaml
 Homestead.json
