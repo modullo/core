@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Lms;
+namespace App\Http\Controllers\Lms\Resource;
 
-use App\Classes\LMS\AssetsClass;
+use App\Classes\LMS\Resource\AssetsClass;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
@@ -59,6 +59,12 @@ class AssetsController extends Controller
         $user = $request->user();
         return $this->assetsClass->fetchAssets($user);
     }
+
+    public function single(string $assetId)
+    {
+        return $this->assetsClass->showAsset($assetId);
+    }
+
 
 
     /**

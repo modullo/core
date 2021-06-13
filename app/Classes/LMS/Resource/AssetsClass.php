@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Classes\Lms;
+namespace App\Classes\Lms\Resource;
 
 
 use App\Classes\ModulloClass;
@@ -10,6 +10,7 @@ use App\Http\Resources\Lms\AssetResource;
 use App\Models\Lms\Assets;
 use App\Models\Lms\Tenants;
 use Exception;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Throwable;
@@ -72,6 +73,21 @@ class AssetsClass extends ModulloClass
         $this->updateModelAttributes($asset,$data);
         $resource = new AssetResource($asset);
         return response()->updated("Asset updated successfully",$resource,"asset");
+
+    }
+
+
+
+    public function showAsset(string $assetId)
+    {
+
+        $asset  =  $this->assets->newQuery()->where("uuid",$assetId)->first();
+        if(!$asset)
+        {
+            throw new ResourceNotFoundException("Asset not found");
+        }
+        $resource = new AssetResource($asset);
+        return response()->fetch("Asset fetched successfully",$resource,"asset");
 
     }
     public function fetchAssets(object $user)
