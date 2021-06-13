@@ -8,6 +8,7 @@ use App\Models\Lms\Lessons;
 use App\Models\Lms\Modules;
 use App\Models\Lms\Programs;
 use App\Models\Lms\Quiz;
+use App\Models\Lms\QuizQuestions;
 use App\Models\Lms\Tenants;
 use App\Models\Lms\User;
 use App\Observers\UuidObserver;
@@ -32,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         Assets::observe(UuidObserver::class);
         Lessons::observe(UuidObserver::class);
         Quiz::observe(UuidObserver::class);
+        QuizQuestions::observe(UuidObserver::class);
         // Somewhere in your application service provider or bootstrap process
         LumenPassport::allowMultipleTokens();
         # register the routes

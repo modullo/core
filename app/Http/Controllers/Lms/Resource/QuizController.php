@@ -26,8 +26,10 @@ class QuizController extends Controller
             "quiz_timer" => "required|numeric",
             "disable_on_submit" => "required",
             "retake_on_request" => "required",
-            "questions" => "required|array"
+            "questions"    => "required|array",
         ]);
+        $user = $request->user();
+        return $this->quizClass->createQuiz($user,$request->all());
 
     }
 

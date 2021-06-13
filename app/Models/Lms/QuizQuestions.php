@@ -3,9 +3,11 @@
 namespace App\Models\Lms;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QuizQuestions extends Model
 {
+    use SoftDeletes;
     protected $table = 'lms_quiz_questions';
 
     protected $guarded = [];

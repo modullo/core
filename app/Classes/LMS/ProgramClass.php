@@ -5,6 +5,7 @@ namespace App\Classes\Lms;
 
 
 use App\Classes\ModulloClass;
+use App\Exceptions\ResourceNotFoundException;
 use App\Http\Resources\Lms\ProgramsResource;
 use App\Models\Lms\Programs;
 use App\Models\Lms\Tenants;
@@ -37,7 +38,7 @@ class ProgramClass extends ModulloClass
     public function fetchAllPrograms(string $search,int $limit, object $user){
         $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
         if (!$tenant){
-            throw new NotFoundException('unfortunately the tenant could not be found');
+            throw new ResourceNotFoundException('unfortunately the tenant could not be found');
         }
 
         if (empty($search)) {

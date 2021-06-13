@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\RecordNotFoundException;
+use App\Models\Lms\User;
+use App\support\Responses\Statuses;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class Controller extends BaseController
@@ -22,18 +28,16 @@ class Controller extends BaseController
    */
   protected $updateFields = [];
 
-  /**
-   * Returns the company for the currently authenticated user, returns NULL otherwise.
-   *
-   * @param Request|null $request
-   * @param bool         $throwExceptionOnFail
-   * @param bool         $enforcePlanAccess
-   *
-   * @return null|User
-   * @throws AuthorizationException
-   * @throws RecordNotFoundException
-   */
-  protected function user(Request $request = null, bool $throwExceptionOnFail = true, bool $enforcePlanAccess = true)
+    /**
+     * Returns the company for the currently authenticated user, returns NULL otherwise.
+     *
+     * @param Request|null $request
+     * @param bool $throwExceptionOnFail
+     * @param bool $enforcePlanAccess
+     *
+     * @return null|User
+     */
+  protected function user(Request $request = null, bool $throwExceptionOnFail = true, bool $enforcePlanAccess = true): ?User
   {
     if ($request === null) {
       $request = app('request');
@@ -65,7 +69,7 @@ class Controller extends BaseController
   {
     $response = [
       'status' => $status,
-      'code' => ResponseStatus::VALIDATION_FAILED,
+      'code' => Statuses::VALIDATION_FAILED,
       'title' => 'Some validation errors were encountered while processing your request',
       'source' => validation_errors_to_messages($e)
     ];
@@ -85,7 +89,7 @@ class Controller extends BaseController
   {
     $response = [
       'status' => $status,
-      'code' => ResponseStatus::EXCEPTION,
+      'code' => Statuses::EXCEPTION,
       'title' => $e->getMessage(),
     ];
     return response()->json(['errors' => [$response]], $status);
