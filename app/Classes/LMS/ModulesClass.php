@@ -1,14 +1,14 @@
 <?php
 
 
-namespace App\Classes\Lms;
+namespace App\Classes\LMS;
 
 
 use App\Classes\ModulloClass;
+use App\Exceptions\ResourceNotFoundException;
+use App\Http\Resources\Lms\ModulesResource;
 use App\Models\Lms\Courses;
 use App\Models\Lms\Modules;
-use Illuminate\Http\Resources\Json\JsonResource;
-use PhpParser\Node\Expr\BinaryOp\Mod;
 
 class ModulesClass extends ModulloClass
 {
@@ -19,23 +19,16 @@ class ModulesClass extends ModulloClass
         $this->modules = new Modules;
     }
 
-    public function createModule(){
-
-        if(!$this->courses->find($courseId))
-        {
-            throw new ResourceNotFoundException("Course not found");
-        }
-        $module = $this->moduleRepo->create([
-            "tenant_id" => $tenantId,
-            "course_id" => $courseId,
-            "title" => $title,
-            "description" => $description,
-            "skills_gained" => $skills_gained,
-            "duration" => $duration,
-            "module_number" => $module_number
+    public function createModule(array $data, object $course){
+        $module = $this->modules->newQuery()->create([
+            "course_id" => $course->id,
+            "title" => $data['title'],
+            "description" => $data['description'],
+            "duration" => $data['duration'],
+            "module_number" => $data['module_number']
         ]);
 
-        return $this->created("Module created successfully",new ModuleResource( $module),"module");
+        return response()->created("Module created successfully",new ModulesResource( $module),"module");
     }
 
 }
