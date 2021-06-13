@@ -92,6 +92,8 @@ Route::group(['prefix' => 'v1'], static function () {
             });
 
             Route::group(['prefix' => 'assets'],function(){
+                Route::post('','AssetsController@storeAsset');
+                Route::post('','AssetsController@storeAsset');
                 Route::post('custom/upload','AssetsController@customUpload');
             });
         });

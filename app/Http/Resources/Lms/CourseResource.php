@@ -20,6 +20,7 @@ class CourseResource extends JsonResource
             'id' => $this->uuid,
             'title' => $this->title,
             'slug' => $this->slug,
+            "tenant" => new ProgramsResource($this->whenLoaded('tenant')),
             "program" => new ProgramsResource($this->whenLoaded('program')),
             "description" => $this->description,
             "course_image" => $this->course_image,
@@ -27,7 +28,9 @@ class CourseResource extends JsonResource
             "skills_to_be_gained" => $this->skills_to_be_gained,
             "course_state" => $this->course_state,
             "html_formatted_description" => $this->html_formatted_description ?? '',
+            "short_description" => $this->short_description ?? '',
             "course_level" => $this->course_level,
+            "course_requirements" => $this->course_requirements,
             'created_at' => (string) $this->created_at->toIso8601String(),
             'updated_at' => (string) $this->updated_at->toIso8601String(),
         ];

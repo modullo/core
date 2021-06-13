@@ -27,6 +27,9 @@ class CourseClass extends ModulloClass
         'skills_to_be_gained' => 'skills_to_be_gained',
         'course_state' => 'course_state',
         'price' => 'price',
+        'short_description' => 'short_description',
+        'course_requirements' => 'course_requirements',
+        'html_formatted_description' => 'html_formatted_description',
     ];
 
     public function __construct()
@@ -101,6 +104,9 @@ class CourseClass extends ModulloClass
                 "duration" => $duration,
                 "skills_to_be_gained" => $skills_to_be_gained,
                 "course_state" => $course_state,
+                'short_description' => $data['short_description'] ?? null,
+                'course_requirements' => $data['course_requirements'] ?? null,
+                'html_formatted_description' => $data['html_formatted_description'] ?? null,
             ]);
         });
 
