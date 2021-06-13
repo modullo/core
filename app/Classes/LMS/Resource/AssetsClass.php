@@ -71,6 +71,7 @@ class AssetsClass extends ModulloClass
             throw new ResourceNotFoundException("Asset not found");
         }
         $this->updateModelAttributes($asset,$data);
+        $asset->save();
         $resource = new AssetResource($asset);
         return response()->updated("Asset updated successfully",$resource,"asset");
 
