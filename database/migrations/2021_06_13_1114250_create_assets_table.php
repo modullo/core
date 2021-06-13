@@ -13,9 +13,16 @@ class CreateAssetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('assets', function (Blueprint $table) {
+        Schema::create('lms_assets', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->index();
+            $table->unsignedBigInteger('tenant_id');
+            $table->foreign('tenant_id')->references('id')->on('lms_tenants')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('asset_name');
+            $table->string('asset_url');
+            $table->string('type');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

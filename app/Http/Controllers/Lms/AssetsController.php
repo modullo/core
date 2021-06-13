@@ -40,22 +40,21 @@ class AssetsController extends Controller
     /**
      * @throws ValidationException
      */
-    public function updateAsset(Request $request, string $assetId)
+    public function update(Request $request, string $assetId)
     {
         $this->validate($request, [
             "asset_url" => "required",
             "asset_name" => "required|string"
         ]);
-        $user = $request->user();
         //get file type from file url send
         $exploded_url = explode(".", $request->asset_url);
         $type = $exploded_url[count($exploded_url) - 1];
         $request->request->add(['type' => $type]);
-        return $this->assetsClass->updateAsset($user, $request->all());
+        return $this->assetsClass->updateAsset($assetId, $request->all());
     }
 
 
-    public function fetchAsset(Request $request)
+    public function all(Request $request)
     {
         $user = $request->user();
         return $this->assetsClass->fetchAssets($user);

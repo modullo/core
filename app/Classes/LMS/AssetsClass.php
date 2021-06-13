@@ -8,6 +8,7 @@ use App\Classes\ModulloClass;
 use App\Exceptions\ResourceNotFoundException;
 use App\Http\Resources\Lms\AssetResource;
 use App\Models\Lms\Assets;
+use App\Models\Lms\Tenants;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -26,8 +27,10 @@ class AssetsClass extends ModulloClass
     protected array $imageType = ["jpeg","jpg","png","gif"];
 
     protected Assets $assets;
+    protected Tenants $tenants;
     public function __construct(){
         $this->assets = new Assets;
+        $this->tenants = new Tenants;
     }
 
 
@@ -37,8 +40,12 @@ class AssetsClass extends ModulloClass
     public function createAsset(object $user, string $asset_name, string $asset_url, string $type){
         try {
             $type = $this->deterMineFileType(strtolower($type));
+            $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+            if (!$tenant) {
+                throw new ResourceNotFoundException('unfortunately the tenant could not found');
+            }
             $asset  =  $this->assets->newQuery()->create([
-                "tenant_id" => $user->id,
+                "tenant_id" => $tenant->id,
                 "asset_name" => $asset_name,
                 "asset_url" => $asset_url,
                 "type" => $type
@@ -69,7 +76,11 @@ class AssetsClass extends ModulloClass
     }
     public function fetchAssets(object $user)
     {
-        $assets =  $this->assets->newQuery()->where('tenant_id',$user->id)->get();
+        $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+        if (!$tenant) {
+            throw new ResourceNotFoundException('unfortunately the tenant could not found');
+        }
+        $assets =  $this->assets->newQuery()->where('tenant_id',$tenant->id)->get();
         $resource = AssetResource::collection($assets);
         return response()->fetch("Assets fetched successfully",$resource,"assets");
     }

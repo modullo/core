@@ -8,5 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Assets extends Model
 {
     use SoftDeletes;
-    
+
+    protected $guarded = [];
+
+    protected $table = 'lms_assets';
 }
