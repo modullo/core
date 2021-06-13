@@ -67,5 +67,9 @@ class ModulesController extends Controller
         return $this->modulesClass->updateModule($request->all(),$module);
     }
 
+    public function single(string $moduleId){
+        return $this->modulesClass->showModule($moduleId);
+    }
+
 
 }

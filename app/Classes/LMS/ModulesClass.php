@@ -30,6 +30,35 @@ class ModulesClass extends ModulloClass
         $this->modules = new Modules;
     }
 
+
+//    public function fetchAllModules(){
+//        public function fetchAllCourses(string $search,object $user,?string $programId = null, ?string $course_state = 'all',int $limit = 100)
+//        {
+//            $builder = $this->courses->newQuery();
+//            if ($programId){
+//                $program = $this->programs->newQuery()->where('uuid',$programId)->firstOrFail();
+//                $builder = $builder->where('program_id',$program->id);
+//            }
+//            $builder->where('tenant_id',$user->id);
+//            switch ($course_state){
+//                case 'publish':
+//                    $filter->where('course_state','publish');
+//                    break;
+//                case 'draft':
+//                    $filter->where('course_state','draft');
+//                    break;
+//                case 'all':
+//                default:
+//                    break;
+//            }
+//            $builder = $builder
+//                ->oldest('created_at')
+//                ->paginate($limit);
+//            $resource = CourseResource::collection($builder);
+//            return response()->fetch('courses fetched successfully',$resource,'courses');
+//        }
+//    }
+
     public function createModule(array $data, object $course){
         $module = $this->modules->newQuery()->create([
             "course_id" => $course->id,
@@ -47,6 +76,18 @@ class ModulesClass extends ModulloClass
         $module->save();
         $resource = new ModulesResource($module);
         return response()->updated('module updated successfully', $resource, 'module');
+    }
+
+    public function showModule(string $moduleId)
+    {
+        $filter = $this->modules->newQuery()->where('uuid',$moduleId);
+        $module = $filter->with('course')->first();
+        if ($module) {
+            $resource = new ModulesResource($module);
+            return response()->fetch("module fetched successfully", $resource, "module");
+        } else {
+            throw new ResourceNotFoundException("Module not found");
+        }
     }
 
 }

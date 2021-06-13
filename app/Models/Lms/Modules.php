@@ -12,6 +12,6 @@ class Modules extends Model
     protected $table = 'lms_modules';
 
     public function course(){
-        return $this->belongsTo(CourseResource::class);
+        return $this->belongsTo(Courses::class);
     }
 }
