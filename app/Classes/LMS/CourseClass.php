@@ -23,7 +23,7 @@ class CourseClass extends ModulloClass
         'title' => 'title',
         'description' => 'description',
         'course_image' => 'course_image',
-        'duration' => 'video_overview',
+        'duration' => 'duration',
         'skills_to_be_gained' => 'skills_to_be_gained',
         'course_state' => 'course_state',
         'price' => 'price',
