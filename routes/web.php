@@ -85,6 +85,7 @@ Route::group(['prefix' => 'v1'], static function () {
 
             Route::group(['prefix' => 'modules'],function(){
                 Route::get('all/{courseId}','ModulesController@index');
+                Route::get('','ModulesController@all');
                 Route::post('create/{courseId}','ModulesController@create');
                 Route::put('{moduleId}','ModulesController@update');
                 Route::get('{moduleId}','ModulesController@single');

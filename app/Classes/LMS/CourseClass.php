@@ -45,7 +45,8 @@ class CourseClass extends ModulloClass
     {
         $builder = $this->courses->newQuery();
         if ($programId){
-            $program = $this->programs->newQuery()->where('uuid',$programId)->firstOrFail();
+            $program = $this->programs->newQuery()->where('uuid',$programId)->first();
+            if (!$program) throw new ResourceNotFoundException('could not find the given program');
             $builder = $builder->where('program_id',$program->id);
         }
         $builder->where('tenant_id',$user->id);

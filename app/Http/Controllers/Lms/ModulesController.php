@@ -24,6 +24,18 @@ class ModulesController extends Controller
         $this->modules = new Modules;
     }
 
+    public function index(Request $request,string $courseId){
+        $search = $request->query('search') ?? '';
+        $limit = $request->query('limit', 100);
+        return $this->modulesClass->fetchAllModules($search,$courseId,$limit);
+    }
+
+    public function all(Request $request){
+        $search = $request->query('search') ?? '';
+        $limit = $request->query('limit', 100);
+        return $this->modulesClass->fetchAllModules($search,null,$limit);
+    }
+
     /**
      * @throws ValidationException
      */
