@@ -103,8 +103,11 @@ Route::group(['prefix' => 'v1'], static function () {
                 Route::group(['prefix' => 'quiz'],function(){
                     Route::get('','QuizController@all');
                     Route::post('','QuizController@create');
-                    Route::put('{assetId}','QuizController@update');
-                    Route::post('custom/upload','QuizController@customUpload');
+                    Route::put('{questionId}','QuizController@update');
+
+                    Route::group(['prefix' => 'questions'],function(){
+                        Route::put('{questionId}','QuizController@updateQuestion');
+                    });
                 });
 
 

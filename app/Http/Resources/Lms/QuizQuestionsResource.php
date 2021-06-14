@@ -18,6 +18,7 @@ class QuizQuestionsResource extends JsonResource
         return [
             "id" => $this->uuid,
             "question_text" => $this->question_text,
+            "question_number" => $this->question_number,
             "score" =>$this->score,
             "answer" => $this->answer,
             'question_type' => $this->question_type,

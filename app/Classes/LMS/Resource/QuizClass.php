@@ -5,6 +5,8 @@ namespace App\Classes\Lms\Resource;
 
 
 use App\Classes\ModulloClass;
+use App\Exceptions\CustomValidationFailed;
+use App\Exceptions\RecordNotFoundException;
 use App\Exceptions\ResourceNotFoundException;
 use App\Exceptions\UnableToCreateResourceException;
 use App\Http\Resources\Lms\QuizQuestionsResource;
@@ -30,6 +32,21 @@ class QuizClass extends ModulloClass
         $this->quiz = new Quiz;
         $this->quizQuestions = new QuizQuestions;
     }
+
+    protected array $updateFields = [
+        "title" => "title",
+        "total_quiz_mark" => "total_quiz_mark",
+        "quiz_timer" => "quiz_timer",
+        "disable_on_submit" => "disable_on_submit",
+        "retake_on_request" => "retake_on_request",
+        "question_text" => "question_text",
+        "answer" => "answer",
+        "question_type" => "question_type",
+        "score" => "score",
+        "question_number" => "question_number",
+        "options" => "options"
+
+    ];
 
 
     public function createQuiz(object $user, array $data)
@@ -67,7 +84,7 @@ class QuizClass extends ModulloClass
         $defected = false;
         foreach ($questions as $question) {
             if (isset($question['question_text']) && isset($question['score']) &&
-                isset($question['answer'])) {
+                isset($question['answer']) & isset($question['question_number'])) {
 
                 if (isset($question['options']) && is_array($question['options']) && (count($question['options']) > 0) && $question['question_type'] === 'options') {
                     //prepare quiz for insert Many
@@ -95,27 +112,18 @@ class QuizClass extends ModulloClass
 
     }
 
-    public function updateQuestion($questionId,$question)
+    public function updateQuestion(string $questionId,array $data)
     {
-        if($this->validateSingleQuestion($question))
+        if($this->validateSingleQuestion($data))
         {
-            $updated = $this->quizQuestions->newQuery()->where('uuid',$questionId)->update([
-                "question_text" => $question['question_text'],
-                "score" => $question['score'],
-                "answer" => $question['answer'],
-                "question_type" => $question['question_type'],
-                "options" => $question['question_type'] === 'options'? json_encode($question['options']): [],
-            ]);
-
-            if($updated){
-                $resource = new QuizQuestionsResource($updated);
-                return  response()->updated('Question updated successfully',$updated,"update");
-            }
-
-            throw new UnableToCreateResourceException('Unable to update question');
-
+            $question = $this->quizQuestions->newQuery()->where('uuid',$questionId)->first();
+            if (!$question) throw new ResourceNotFoundException('this question does not exists in our records');
+            $this->updateModelAttributes($question,$data);
+            $question->save();
+            $resource = new QuizQuestionsResource($question);
+            return  response()->updated('Question updated successfully',$resource,"question");
         }else{
-            throw new LogicException('Options not well formatted');
+            throw new LogicException('Quiz questions not properly formatted');
         }
 
     }
@@ -126,7 +134,7 @@ class QuizClass extends ModulloClass
         return response()->deleted("Question deleted successfully","true","deleted");
     }
 
-    private function validateUpdateQuizQuestions($quiz,$questions)
+    private function validateUpdateQuizQuestions($quiz,$questions): bool
     {
         //validate and prepare quiz questions
         $quiz_array = [];
@@ -175,19 +183,24 @@ class QuizClass extends ModulloClass
 
     }
 
-    private function validateSingleQuestion($question)
+    private function validateSingleQuestion(&$question): bool
     {
-        if(isset($question['question_text']) && isset($question['question_text'])  && isset($question['score']) && isset($question['answer']) && isset($question['options']))
+        if(isset($question['question_text']) && isset($question['question_text'])  && isset($question['question_type'])
+            && isset($question['score']) && isset($question['answer']) && $question['question_number'])
         {
-            //
-            if(is_array($question['options'] ) && (count($question['options']) >0)){
+            if($question['question_type'] === 'options' &&
+                isset($question['options']) && is_array($question['options'] ) && (count($question['options']) >0)){
+                 $question['options'] = json_encode($question['options']);
                 //prepare quiz for insert Many
                 return true;
-            }else{
-                return false;
             }
-
+            elseif ($question['question_type'] === 'case_study'){
+                $question['options'] = json_encode([]);
+                return true;
+            }
+            throw new LogicException('ensure you are sending appropriate data for the particular question');
         }
+        return false;
     }
 
     public function updateQuiz($tenantId,$quizId,$title,$reward,$total_quiz_mark,$quiz_timer,$disable_on_submit,$retake_on_request,$questions)
