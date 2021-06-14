@@ -15,16 +15,16 @@ class CreateLmsQuizQuestionsTable extends Migration
     {
         Schema::create('lms_quiz_questions', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
+            $table->uuid('uuid')->index();
             $table->unsignedBigInteger('quiz_id');
             $table->foreign('quiz_id')->references('id')->on('lms_quiz')->onDelete('cascade')->onUpdate('cascade');
             $table->bigInteger('score');
             $table->string('answer');
             $table->string('question_type');
             $table->text('question_text');
-            $table->json('options')->nullable();
-            $table->softDeletes();
+            $table->json('options')->default([]);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

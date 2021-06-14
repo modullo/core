@@ -23,8 +23,8 @@ class CreateLmsQuizTable extends Migration
             $table->bigInteger('quiz_timer');
             $table->boolean('disable_on_submit')->default(false);
             $table->boolean('retake_on_request')->default(false);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
