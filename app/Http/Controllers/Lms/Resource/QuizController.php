@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\Lms\Resource;
 
 
-use App\Classes\Lms\Resource\QuizClass;
+use App\Classes\LMS\Resource\QuizClass;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
