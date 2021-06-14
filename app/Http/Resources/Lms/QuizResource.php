@@ -22,7 +22,7 @@ class QuizResource extends JsonResource
             "quiz_timer" => (int)$this->quiz_timer,
             "disable_on_submit" => (boolean)$this->disable_on_submit,
             "retake_on_request" => (boolean)$this->retake_on_request,
-            "questions" => QuizQuestionsResource::collection($this->questions)
+            "questions" => QuizQuestionsResource::collection($this->whenLoaded('questions'))
         ];
     }
 }

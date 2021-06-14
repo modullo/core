@@ -15,6 +15,7 @@ use App\Models\Lms\Quiz;
 use App\Models\Lms\QuizQuestions;
 use App\Models\Lms\Tenants;
 use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use LogicException;
@@ -22,17 +23,6 @@ use Ramsey\Uuid\Uuid;
 
 class QuizClass extends ModulloClass
 {
-    private QuizQuestions $quizQuestions;
-    private Tenants $tenants;
-    private Quiz $quiz;
-
-    public function __construct()
-    {
-        $this->tenants = new Tenants;
-        $this->quiz = new Quiz;
-        $this->quizQuestions = new QuizQuestions;
-    }
-
     protected array $updateFields = [
         "title" => "title",
         "total_quiz_mark" => "total_quiz_mark",
@@ -47,7 +37,16 @@ class QuizClass extends ModulloClass
         "options" => "options"
 
     ];
+    private QuizQuestions $quizQuestions;
+    private Tenants $tenants;
+    private Quiz $quiz;
 
+    public function __construct()
+    {
+        $this->tenants = new Tenants;
+        $this->quiz = new Quiz;
+        $this->quizQuestions = new QuizQuestions;
+    }
 
     public function createQuiz(object $user, array $data)
     {
@@ -74,7 +73,7 @@ class QuizClass extends ModulloClass
             $this->quizQuestions->newQuery()->insert($questions);
         });
         $resource = new QuizResource($quiz);
-        return response()->created('Quiz created successfully',$resource,"quiz");
+        return response()->created('Quiz created successfully', $resource, "quiz");
     }
 
     private function validateQuizQuestions(string $quiz_id, array $questions): array
@@ -88,14 +87,12 @@ class QuizClass extends ModulloClass
 
                 if (isset($question['options']) && is_array($question['options']) && (count($question['options']) > 0) && $question['question_type'] === 'options') {
                     //prepare quiz for insert Many
-                    array_push($quiz_array, array_merge([ "uuid" => Str::uuid(),"quiz_id" => $quiz_id, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+                    array_push($quiz_array, array_merge(["uuid" => Str::uuid(), "quiz_id" => $quiz_id, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
                         $question, ["options" => json_encode($question['options'])]));
-                }
-                elseif ($question['question_type'] && $question['question_type'] === 'case_study'){
-                    array_push($quiz_array, array_merge([ "uuid" => Str::uuid(),"quiz_id" => $quiz_id,"created_at" => Carbon::now(), "updated_at" => Carbon::now()],
-                        $question,["options" => json_encode([])]));
-                }
-                else {
+                } elseif ($question['question_type'] && $question['question_type'] === 'case_study') {
+                    array_push($quiz_array, array_merge(["uuid" => Str::uuid(), "quiz_id" => $quiz_id, "created_at" => Carbon::now(), "updated_at" => Carbon::now()],
+                        $question, ["options" => json_encode([])]));
+                } else {
                     return [];
                 }
 
@@ -112,89 +109,73 @@ class QuizClass extends ModulloClass
 
     }
 
-    public function updateQuestion(string $questionId,array $data)
+    public function updateQuestion(string $questionId, array $data)
     {
-        if($this->validateSingleQuestion($data))
-        {
-            $question = $this->quizQuestions->newQuery()->where('uuid',$questionId)->first();
+        if ($this->validateSingleQuestion($data)) {
+            $question = $this->quizQuestions->newQuery()->where('uuid', $questionId)->first();
             if (!$question) throw new ResourceNotFoundException('this question does not exists in our records');
-            $this->updateModelAttributes($question,$data);
+            $this->updateModelAttributes($question, $data);
             $question->save();
             $resource = new QuizQuestionsResource($question);
-            return  response()->updated('Question updated successfully',$resource,"question");
-        }else{
+            return response()->updated('Question updated successfully', $resource, "question");
+        } else {
             throw new LogicException('Quiz questions not properly formatted');
         }
 
     }
 
-    public function deleteQuestion($questionId)
+    public function addQuestion(string $quizId, array $data)
     {
-        $this->quizQuestions->newQuery()->where('uuid',$questionId)->delete();
-        return response()->deleted("Question deleted successfully","true","deleted");
-    }
-
-    private function validateUpdateQuizQuestions($quiz,$questions): bool
-    {
-        //validate and prepare quiz questions
-        $quiz_array = [];
-        $defected = false;
-        foreach($questions as $question)
-        {
-            if(isset($question['question_text'])   && isset($question['score']) && isset($question['answer']) && isset($question['options']))
-            {
-
-                if(is_array($question['options'] ) && (count($question['options']) >0)){
-                    //prepare quiz for insert Many
-                    if(isset($question['id']))
-                    {
-                        $this->quizQuestionRepo->where('id',$question['id'])
-                            ->where("quiz_id" , $quiz->id)
-                            ->update([
-                                "question_text" => $question['question_text'],
-                                "score" => $question['score'],
-                                "answer" => $question['answer'],
-                                "options" => json_encode($question['options'])] );
-
-                    }else{
-                        $this->quizQuestionRepo
-                            ->create([ "id" => Uuid::uuid1(),
-                                "tenant_id" => $tenantId,
-                                "question_text" => $question['question_text'],
-                                'quiz_id' => $quiz->id,
-                                "score" => $question['score'],
-                                "answer" => $question['answer'],
-                                "options" => json_encode($question['options'])] );
-                    }
-                }else{
-
-                    throw new CustomValidationFailed("Question are not well formatted");
-                }
-
-            }else{
-                throw new CustomValidationFailed("Question are not well formatted");
+        $quiz = $this->quiz->newQuery()->where('uuid',$quizId)->first();
+        if (!$quiz) throw new ResourceNotFoundException('this quiz does not exist in our records ');
+        $quizQuestions = null;
+        if (isset($data['question_text']) && isset($data['question_text']) && isset($data['question_type'])
+            && isset($data['score']) && isset($data['answer']) && $data['question_number']) {
+            if ($data['question_type'] === 'options' && isset($data['options']) && is_array($data['options']) && (count($data['options']) > 0)) {
+                //prepare quiz for insert Many
+                $quizQuestions = $this->quizQuestions
+                    ->newQuery()
+                    ->create([
+                        "uuid" => Str::uuid(),
+                        "quiz_id" => $quiz->id,
+                        "question_text" => $data['question_text'],
+                        "score" => $data['score'],
+                        "answer" => $data['answer'],
+                        "options" => json_encode($data['options']),
+                        'question_type' => $data['question_type'],
+                        'question_number' => $data['question_number'],
+                    ]);
             }
-
+            elseif ($data['question_type'] === 'case_study') {
+                $quizQuestions =  $this->quizQuestions
+                    ->newQuery()
+                    ->create([
+                        "uuid" => Str::uuid(),
+                        "quiz_id" => $quiz->id,
+                        "question_text" => $data['question_text'],
+                        "score" => $data['score'],
+                        "answer" => $data['answer'],
+                        "options" => json_encode([]),
+                        'question_type' => $data['question_type'],
+                        'question_number' => $data['question_number'],
+                    ]);
+            }
         }
-
-        return true;
-
-
-
+        $resource = new QuizQuestionsResource($quizQuestions);
+        return response()->created('question created successfully',$resource,'quiz_questions');
     }
+
 
     private function validateSingleQuestion(&$question): bool
     {
-        if(isset($question['question_text']) && isset($question['question_text'])  && isset($question['question_type'])
-            && isset($question['score']) && isset($question['answer']) && $question['question_number'])
-        {
-            if($question['question_type'] === 'options' &&
-                isset($question['options']) && is_array($question['options'] ) && (count($question['options']) >0)){
-                 $question['options'] = json_encode($question['options']);
+        if (isset($question['question_text']) && isset($question['question_text']) && isset($question['question_type'])
+            && isset($question['score']) && isset($question['answer']) && $question['question_number']) {
+            if ($question['question_type'] === 'options' &&
+                isset($question['options']) && is_array($question['options']) && (count($question['options']) > 0)) {
+                $question['options'] = json_encode($question['options']);
                 //prepare quiz for insert Many
                 return true;
-            }
-            elseif ($question['question_type'] === 'case_study'){
+            } elseif ($question['question_type'] === 'case_study') {
                 $question['options'] = json_encode([]);
                 return true;
             }
@@ -203,48 +184,110 @@ class QuizClass extends ModulloClass
         return false;
     }
 
-    public function updateQuiz($tenantId,$quizId,$title,$reward,$total_quiz_mark,$quiz_timer,$disable_on_submit,$retake_on_request,$questions)
+    public function deleteQuestion($questionId)
     {
-        $quiz =  $this->quizRepo->find($quizId);
-        $updated =  $this->quizRepo->whereId($quizId)->update([
-            "tenant_id" => $tenantId,
-            "title" => $title,
-            "reward" => $reward,
-            "total_quiz_mark" => $total_quiz_mark,
-            "quiz_timer" => $quiz_timer,
-            "disable_on_submit" => $disable_on_submit,
-            "retake_on_request" => $retake_on_request
-        ]);
+        $this->quizQuestions->newQuery()->where('uuid', $questionId)->delete();
+        return response()->deleted("Question deleted successfully", "true", "deleted");
+    }
 
-        if($updated && $quiz)
-        {
-            DB::transaction(function () use($tenantId,$quiz,$questions) {
-                $this->validateUpdateQuizQuestions($tenantId,$quiz,$questions);
-            });
-            return  $this->updated('Quiz updated successfully',$updated,"update");
-        }else{
-            throw new UnableToCreateResourceException('Unable to update quiz');
+    public function updateQuiz(string $quizId, array $data)
+    {
+        $quiz = $this->quiz->newQuery()->where('uuid',$quizId)->first();
+        if (!$quiz) throw new ResourceNotFoundException('this quiz does not exist in our records ');
+        $this->updateModelAttributes($quiz,$data);
+        $quiz->save();
+        if (isset($data['questions'])){
+        DB::transaction(function () use ( $quiz, $data) {
+            $this->validateUpdateQuizQuestions($quiz, $data['questions']);
+        });
         }
+        return response()->updated('Quiz updated successfully', $quiz, "quiz");
+    }
+
+    private function validateUpdateQuizQuestions(object $quiz, array $questions): void
+    {
+        foreach ($questions as $question) {
+            if (isset($question['question_text']) && isset($question['question_text']) && isset($question['question_type'])
+                && isset($question['score']) && isset($question['answer']) && $question['question_number']) {
+                if ($question['question_type'] === 'options' && isset($questions['options']) && is_array($question['options']) && (count($question['options']) > 0)) {
+                    //prepare quiz for insert Many
+                    if (isset($question['id'])) {
+                        $quizQuestion =  $this->quizQuestions->newQuery()->where('id', $question['id'])
+                            ->where("quiz_id", $quiz->id)
+                            ->first();
+                        $isValid = $this->validateSingleQuestion($quizQuestion);
+                        if (!$isValid) throw new LogicException('one of the questions provided is not properly formatted');
+                        $this->updateModelAttributes($quizQuestion,$question);
+                        $quizQuestion->save();
+                    } else {
+                        $this->quizQuestions
+                            ->newQuery()
+                            ->create([
+                                "uuid" => Str::uuid(), "quiz_id" => $quiz->id,
+                                "question_text" => $question['question_text'],
+                                "score" => $question['score'],
+                                "answer" => $question['answer'],
+                                "options" => json_encode($question['options']),
+                                'question_type' => $question['question_type'],
+                                'question_number' => $question['question_number'],
+                        ]);
+                    }
+                }
+                elseif ($question['question_type'] === 'case_study') {
+                    if (isset($question['id'])) {
+                        $quizQuestion =  $this->quizQuestions->newQuery()->where('id', $question['id'])
+                            ->where("quiz_id", $quiz->id)
+                            ->first();
+                        $isValid = $this->validateSingleQuestion($quizQuestion);
+                        if (!$isValid) throw new LogicException('one of the questions provided is not properly formatted');
+                        $this->updateModelAttributes($quizQuestion,$question);
+                        $quizQuestion->save();
+                    } else {
+                        $this->quizQuestions
+                            ->newQuery()
+                            ->create([
+                                "uuid" => Str::uuid(), "quiz_id" => $quiz->id,
+                                "question_text" => $question['question_text'],
+                                "score" => $question['score'],
+                                "answer" => $question['answer'],
+                                "options" => json_encode([]),
+                                'question_type' => $question['question_type'],
+                                'question_number' => $question['question_number'],
+                            ]);
+                    }
+                }
+                else{
+                    throw new CustomValidationFailed("Question are not well formatted");
+                }
+
+            }
+            else {
+                throw new CustomValidationFailed("A particular question is not well formatted.. please ensure all required fields for the question are provided");
+            }
+
+        }
+
 
     }
 
-    public function getAllQuiz($tenantId)
+    public function getAllQuiz(object $user, int $limit)
     {
-        $quizzes = $this->quizRepo->whereTenantId($tenantId)->get();
-        return $this->fetch("All tenant quiz fetched",$quizzes,"quizzes");
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant){
+            throw new ResourceNotFoundException('unfortunately the tenant could not be found');
+        }
+        $quizzes = $this->quiz->newQuery()->where('tenant_id',$tenant->id)->oldest('created_at')->paginate($limit);
+        $resource = QuizResource::collection($quizzes);
+        return response()->fetch("All tenant quiz fetched", $resource, "quizzes");
     }
 
 
-    public function getSingleQuiz($tenantId,$quizId)
+    public function getSingleQuiz(string $quizId)
     {
-        $quiz =  $this->quizRepo->whereTenantId($tenantId)->whereId($quizId)->with('questions')->first();
-
-        if($quiz)
-        {
-            return $this->get(" tenant quiz fetched",$quiz,"quiz");
-        }else{
-            throw new RecordNotFoundException('Quiz not found');
-        }
+        $quiz = $this->quiz->newQuery()->where('uuid',$quizId)->with('questions')->first();
+        if (!$quiz)  throw new RecordNotFoundException('Quiz not found');
+        $resource = new QuizResource($quiz);
+        return response()->fetch("quiz fetched successfully", $resource, "quiz");
     }
 
 }

@@ -101,12 +101,15 @@ Route::group(['prefix' => 'v1'], static function () {
                 });
 
                 Route::group(['prefix' => 'quiz'],function(){
-                    Route::get('','QuizController@all');
+                    Route::get('','QuizController@index');
                     Route::post('','QuizController@create');
-                    Route::put('{questionId}','QuizController@update');
+                    Route::put('{quizId}','QuizController@update');
+                    Route::get('{quizId}','QuizController@single');
 
                     Route::group(['prefix' => 'questions'],function(){
+                        Route::post('add/{quizId}','QuizController@addQuestion');
                         Route::put('{questionId}','QuizController@updateQuestion');
+                        Route::delete('{questionId}','QuizController@deleteQuestion');
                     });
                 });
 

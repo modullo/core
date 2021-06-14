@@ -14,6 +14,6 @@ class Quiz extends Model
     protected $guarded = [];
 
     public function questions(){
-        return $this->hasMany(QuizQuestions::class);
+        return $this->hasMany(QuizQuestions::class)->orderBy('question_number');
     }
 }

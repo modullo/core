@@ -52,13 +52,17 @@ class CourseClass extends ModulloClass
             if (!$program) throw new ResourceNotFoundException('could not find the given program');
             $builder = $builder->where('program_id',$program->id);
         }
-        $builder->where('tenant_id',$user->id);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant){
+            throw new ResourceNotFoundException('unfortunately the tenant could not be found');
+        }
+        $builder->where('tenant_id',$tenant->id);
         switch ($course_state){
             case 'publish':
-                $filter->where('course_state','publish');
+                $builder->where('course_state','publish');
                 break;
             case 'draft':
-                $filter->where('course_state','draft');
+                $builder->where('course_state','draft');
                 break;
             case 'all':
             default:
