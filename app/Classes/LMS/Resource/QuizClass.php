@@ -6,6 +6,8 @@ namespace App\Classes\Lms\Resource;
 
 use App\Classes\ModulloClass;
 use App\Exceptions\ResourceNotFoundException;
+use App\Exceptions\UnableToCreateResourceException;
+use App\Http\Resources\Lms\QuizQuestionsResource;
 use App\Http\Resources\Lms\QuizResource;
 use App\Models\Lms\Quiz;
 use App\Models\Lms\QuizQuestions;
@@ -14,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use LogicException;
+use Ramsey\Uuid\Uuid;
 
 class QuizClass extends ModulloClass
 {
@@ -90,6 +93,145 @@ class QuizClass extends ModulloClass
         return $defected ? [] : $quiz_array;
 
 
+    }
+
+    public function updateQuestion($questionId,$question)
+    {
+        if($this->validateSingleQuestion($question))
+        {
+            $updated = $this->quizQuestions->newQuery()->where('uuid',$questionId)->update([
+                "question_text" => $question['question_text'],
+                "score" => $question['score'],
+                "answer" => $question['answer'],
+                "question_type" => $question['question_type'],
+                "options" => $question['question_type'] === 'options'? json_encode($question['options']): [],
+            ]);
+
+            if($updated){
+                $resource = new QuizQuestionsResource($updated);
+                return  response()->updated('Question updated successfully',$updated,"update");
+            }
+
+            throw new UnableToCreateResourceException('Unable to update question');
+
+        }else{
+            throw new LogicException('Options not well formatted');
+        }
+
+    }
+
+    public function deleteQuestion($questionId)
+    {
+        $this->quizQuestions->newQuery()->where('uuid',$questionId)->delete();
+        return response()->deleted("Question deleted successfully","true","deleted");
+    }
+
+    private function validateUpdateQuizQuestions($quiz,$questions)
+    {
+        //validate and prepare quiz questions
+        $quiz_array = [];
+        $defected = false;
+        foreach($questions as $question)
+        {
+            if(isset($question['question_text'])   && isset($question['score']) && isset($question['answer']) && isset($question['options']))
+            {
+
+                if(is_array($question['options'] ) && (count($question['options']) >0)){
+                    //prepare quiz for insert Many
+                    if(isset($question['id']))
+                    {
+                        $this->quizQuestionRepo->where('id',$question['id'])
+                            ->where("quiz_id" , $quiz->id)
+                            ->update([
+                                "question_text" => $question['question_text'],
+                                "score" => $question['score'],
+                                "answer" => $question['answer'],
+                                "options" => json_encode($question['options'])] );
+
+                    }else{
+                        $this->quizQuestionRepo
+                            ->create([ "id" => Uuid::uuid1(),
+                                "tenant_id" => $tenantId,
+                                "question_text" => $question['question_text'],
+                                'quiz_id' => $quiz->id,
+                                "score" => $question['score'],
+                                "answer" => $question['answer'],
+                                "options" => json_encode($question['options'])] );
+                    }
+                }else{
+
+                    throw new CustomValidationFailed("Question are not well formatted");
+                }
+
+            }else{
+                throw new CustomValidationFailed("Question are not well formatted");
+            }
+
+        }
+
+        return true;
+
+
+
+    }
+
+    private function validateSingleQuestion($question)
+    {
+        if(isset($question['question_text']) && isset($question['question_text'])  && isset($question['score']) && isset($question['answer']) && isset($question['options']))
+        {
+            //
+            if(is_array($question['options'] ) && (count($question['options']) >0)){
+                //prepare quiz for insert Many
+                return true;
+            }else{
+                return false;
+            }
+
+        }
+    }
+
+    public function updateQuiz($tenantId,$quizId,$title,$reward,$total_quiz_mark,$quiz_timer,$disable_on_submit,$retake_on_request,$questions)
+    {
+        $quiz =  $this->quizRepo->find($quizId);
+        $updated =  $this->quizRepo->whereId($quizId)->update([
+            "tenant_id" => $tenantId,
+            "title" => $title,
+            "reward" => $reward,
+            "total_quiz_mark" => $total_quiz_mark,
+            "quiz_timer" => $quiz_timer,
+            "disable_on_submit" => $disable_on_submit,
+            "retake_on_request" => $retake_on_request
+        ]);
+
+        if($updated && $quiz)
+        {
+            DB::transaction(function () use($tenantId,$quiz,$questions) {
+                $this->validateUpdateQuizQuestions($tenantId,$quiz,$questions);
+            });
+            return  $this->updated('Quiz updated successfully',$updated,"update");
+        }else{
+            throw new UnableToCreateResourceException('Unable to update quiz');
+        }
+
+    }
+
+    public function getAllQuiz($tenantId)
+    {
+        $quizzes = $this->quizRepo->whereTenantId($tenantId)->get();
+        return $this->fetch("All tenant quiz fetched",$quizzes,"quizzes");
+    }
+
+
+    public function getSingleQuiz($tenantId,$quizId)
+    {
+        $quiz =  $this->quizRepo->whereTenantId($tenantId)->whereId($quizId)->with('questions')->first();
+
+        if($quiz)
+        {
+            return $this->get(" tenant quiz fetched",$quiz,"quiz");
+        }else{
+            throw new RecordNotFoundException('Quiz not found');
+        }
     }
 
 }
