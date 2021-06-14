@@ -22,7 +22,7 @@ class CreateLmsQuizQuestionsTable extends Migration
             $table->string('answer');
             $table->string('question_type');
             $table->text('question_text');
-            $table->json('options')->default([]);
+            $table->text('options')->default([]);
             $table->timestamps();
             $table->softDeletes();
         });
