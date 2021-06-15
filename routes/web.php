@@ -91,6 +91,15 @@ Route::group(['prefix' => 'v1'], static function () {
                 Route::get('{moduleId}','ModulesController@single');
             });
 
+
+            Route::group(['prefix' => 'lessons'],function(){
+                Route::get('all/{moduleId}','LessonsController@index');
+                Route::get('','LessonsController@all');
+                Route::post('create/{moduleId}','LessonsController@create');
+                Route::put('{lessonId}','LessonsController@update');
+                Route::get('{lessonId}','LessonsController@single');
+            });
+
             Route::group(['namespace' => 'Resource'],function(){
                 Route::group(['prefix' => 'assets'],function(){
                     Route::get('','AssetsController@all');

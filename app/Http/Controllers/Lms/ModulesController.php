@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Lms;
 
 use App\Classes\LMS\ModulesClass;
 use App\Exceptions\CustomValidationFailed;
+use App\Exceptions\ResourceNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\Lms\Courses;
 use App\Models\Lms\Modules;
@@ -27,13 +28,16 @@ class ModulesController extends Controller
     public function index(Request $request,string $courseId){
         $search = $request->query('search') ?? '';
         $limit = $request->query('limit', 100);
-        return $this->modulesClass->fetchAllModules($search,$courseId,$limit);
+        $user = $request->user();
+        return $this->modulesClass->fetchAllModules($user,$search,$courseId,$limit);
     }
 
     public function all(Request $request){
         $search = $request->query('search') ?? '';
         $limit = $request->query('limit', 100);
-        return $this->modulesClass->fetchAllModules($search,null,$limit);
+        $user = $request->user();
+
+        return $this->modulesClass->fetchAllModules($user,$search,null,$limit);
     }
 
     /**
@@ -60,6 +64,9 @@ class ModulesController extends Controller
     }
 
 
+    /**
+     * @throws ValidationException
+     */
     public function update(Request $request, string $moduleId)
     {
         $this->validate($request, [

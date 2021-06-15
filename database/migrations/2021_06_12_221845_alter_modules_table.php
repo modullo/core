@@ -31,6 +31,8 @@ class AlterModulesTable extends Migration
         Schema::table('lms_modules',function (Blueprint $table){
             $table->dropColumn('module_number');
             $table->dropColumn('description');
+            $table->bigInteger('module_no');
+            $table->text('skills_to_be_acquired');
         });
     }
 }
