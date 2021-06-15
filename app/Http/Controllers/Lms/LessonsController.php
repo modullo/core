@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Lms;
 
-use App\Classes\Lms\LessonsClass;
+use App\Classes\LMS\LessonsClass;
 use App\Exceptions\ResourceNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\Lms\Lessons;
