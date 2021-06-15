@@ -55,8 +55,13 @@ class ModulesClass extends ModulloClass
             return response()->fetch('modules fetched successfully',$resource,'modules');
     }
 
-    public function createModule(array $data, object $course){
+    public function createModule(object $user, array $data, object $course){
+        $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+        if (!$tenant) {
+            throw new ResourceNotFoundException('unfortunately the tenant could not found');
+        }
         $module = $this->modules->newQuery()->create([
+            "tenant_id" => $tenant->id,
             "course_id" => $course->id,
             "title" => $data['title'],
             "description" => $data['description'],

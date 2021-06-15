@@ -59,8 +59,9 @@ class ModulesController extends Controller
         if ($check) {
             throw new CustomValidationFailed('the module number has already been taken for the course');
         }
+        $user = $request->user();
 
-        return $this->modulesClass->createModule($request->all(), $course);
+        return $this->modulesClass->createModule($user,$request->all(), $course);
     }
 
 
