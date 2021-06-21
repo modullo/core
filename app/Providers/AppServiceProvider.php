@@ -4,7 +4,11 @@ namespace App\Providers;
 
 use App\Models\Lms\Assets;
 use App\Models\Lms\Courses;
+use App\Models\Lms\LearnerCourses;
+use App\Models\Lms\LearnerPrograms;
+use App\Models\Lms\Learners;
 use App\Models\Lms\Lessons;
+use App\Models\Lms\LessonTracker;
 use App\Models\Lms\Modules;
 use App\Models\Lms\Programs;
 use App\Models\Lms\Quiz;
@@ -33,7 +37,13 @@ class AppServiceProvider extends ServiceProvider
         Assets::observe(UuidObserver::class);
         Lessons::observe(UuidObserver::class);
         Quiz::observe(UuidObserver::class);
+        Quiz::observe(UuidObserver::class);
         QuizQuestions::observe(UuidObserver::class);
+
+        Learners::observe(UuidObserver::class);
+        LearnerCourses::observe(UuidObserver::class);
+        LearnerPrograms::observe(UuidObserver::class);
+        LessonTracker::observe(UuidObserver::class);
         // Somewhere in your application service provider or bootstrap process
         LumenPassport::allowMultipleTokens();
         # register the routes

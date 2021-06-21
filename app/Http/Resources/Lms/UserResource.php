@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Lms;
 
+use App\Http\Resources\LearnersResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -27,7 +28,7 @@ class UserResource extends JsonResource
             $response['tenant'] = new TenantsResource($this->tenant);
         }
         elseif($this->getRoleNames()[0] === 'lms_learner'){
-            $response['tenant'] = $this->learner;
+            $response['learner'] = new LearnersResource($this->learner);
         }
 
         return $response;

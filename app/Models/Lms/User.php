@@ -30,6 +30,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne(Tenants::class, 'lms_user_id');
     }
 
+    public function learner(){
+        return $this->hasOne(Learners::class, 'lms_user_id');
+    }
+
 
 
 

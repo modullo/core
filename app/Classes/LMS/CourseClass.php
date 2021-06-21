@@ -44,7 +44,7 @@ class CourseClass extends ModulloClass
      * @param string|null $programId
      * @param string|null $course_state
      */
-    public function fetchAllCourses(string $search,object $user,?string $programId = null, ?string $course_state = 'all',int $limit = 100)
+    public function fetchAllCourses(string $search,string $tenantId,?string $programId = null, ?string $course_state = 'all',int $limit = 100)
     {
         $builder = $this->courses->newQuery();
         if ($programId){
@@ -52,7 +52,7 @@ class CourseClass extends ModulloClass
             if (!$program) throw new ResourceNotFoundException('could not find the given program');
             $builder = $builder->where('program_id',$program->id);
         }
-        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        $tenant = $this->tenants->newQuery()->where('id',$tenantId)->first();
         if (!$tenant){
             throw new ResourceNotFoundException('unfortunately the tenant could not be found');
         }
@@ -75,10 +75,10 @@ class CourseClass extends ModulloClass
         return response()->fetch('courses fetched successfully',$resource,'courses');
     }
 
-    public function createCourse(array $data, string $programId, object $user)
+    public function createCourse(array $data, string $programId, string $tenantId)
     {
         $course = null;
-        $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+        $tenant = $this->tenants->newQuery()->where('id', $tenantId)->first();
         if (!$tenant) {
             throw new ResourceNotFoundException('unfortunately the tenant could not found');
         }
@@ -118,13 +118,9 @@ class CourseClass extends ModulloClass
     }
 
 
-    public function showCourse(string $courseId, object $user)
+    public function showCourse(string $courseId)
     {
-        $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
-        if (!$tenant) {
-            throw new ResourceNotFoundException('unfortunately the tenant could not found');
-        }
-        $filter = $this->courses->newQuery()->where('tenant_id', $tenant->id)->where('uuid',$courseId);
+        $filter = $this->courses->newQuery()->where('uuid',$courseId);
         $course = $filter->with('program')->first();
         if ($course) {
             $resource = new CourseResource($course);
@@ -144,7 +140,6 @@ class CourseClass extends ModulloClass
         $course->save();
         $course = new CourseResource($course);
         return response()->updated('course updated successfully', $course, 'course');
-
     }
 
 

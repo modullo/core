@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Lms;
 
 use App\Classes\LMS\ProgramClass;
+use App\Exceptions\ResourceNotFoundException;
+use App\Models\Lms\Tenants;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
@@ -10,8 +12,10 @@ use Illuminate\Validation\ValidationException;
 class ProgramsController extends Controller
 {
     private ProgramClass $programClass;
+    private Tenants $tenants;
     public function __construct(){
         $this->programClass = new ProgramClass;
+        $this->tenants = new Tenants;
     }
 
 
@@ -19,7 +23,9 @@ class ProgramsController extends Controller
         $user = $request->user();
         $search = $request->query('search') ?? '';
         $limit = $request->query('limit', 100);
-        return $this->programClass->fetchAllPrograms($search, $limit, $user);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->programClass->fetchAllPrograms($search, $limit, $tenant->id);
     }
     /**
      * @throws ValidationException
@@ -33,8 +39,9 @@ class ProgramsController extends Controller
             'video_overview' => 'nullable|string',
             'visibility_type' => 'required|in:private,public',
         ]);
-
-        return  $this->programClass->createProgram($request->all(), $user);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return  $this->programClass->createProgram($request->all(), $tenant->id);
     }
 
     public function single(Request $request, string  $programId)

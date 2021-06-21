@@ -13,6 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-      $this->call([OverlordSeeder::class,RolesAndPermissionSeeder::class,TenantSeeder::class]);
+      $this->call([OverlordSeeder::class,RolesAndPermissionSeeder::class,TenantSeeder::class, LearnerSeeder::class]);
     }
 }

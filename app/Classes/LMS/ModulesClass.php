@@ -34,8 +34,8 @@ class ModulesClass extends ModulloClass
     }
 
 
-    public function fetchAllModules(object $user,string $search,?string $courseId = null, int $limit = 100){
-        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+    public function fetchAllModules(string $tenantId,string $search,?string $courseId = null, int $limit = 100){
+        $tenant = $this->tenants->newQuery()->where('id',$tenantId)->first();
         if (!$tenant){
             throw new ResourceNotFoundException('unfortunately the tenant could not be found');
         }
@@ -55,8 +55,8 @@ class ModulesClass extends ModulloClass
             return response()->fetch('modules fetched successfully',$resource,'modules');
     }
 
-    public function createModule(object $user, array $data, object $course){
-        $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+    public function createModule(string $tenantId, array $data, object $course){
+        $tenant = $this->tenants->newQuery()->where('id', $tenantId)->first();
         if (!$tenant) {
             throw new ResourceNotFoundException('unfortunately the tenant could not found');
         }

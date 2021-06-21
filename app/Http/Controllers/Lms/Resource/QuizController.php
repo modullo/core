@@ -6,23 +6,28 @@ namespace App\Http\Controllers\Lms\Resource;
 
 use App\Classes\LMS\Resource\QuizClass;
 use App\Http\Controllers\Controller;
+use App\Models\Lms\Tenants;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class QuizController extends Controller
 {
     private QuizClass $quizClass;
+    private Tenants $tenants;
 
     public function __construct()
     {
         $this->quizClass = new QuizClass;
+        $this->tenants = new Tenants;
     }
 
     public function index(Request $request){
         $user = $request->user();
         $search = $request->query('search') ?? '';
         $limit = $request->query('limit', 100);
-        return $this->quizClass->getAllQuiz($user,$limit);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->quizClass->getAllQuiz($tenant->id,$limit);
     }
 
     /**
@@ -39,7 +44,9 @@ class QuizController extends Controller
             "questions" => "required",
         ]);
         $user = $request->user();
-        return $this->quizClass->createQuiz($user, $request->all());
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->quizClass->createQuiz($tenant->id, $request->all());
 
     }
     public function addQuestion(Request $request, string $quizId)

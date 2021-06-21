@@ -38,10 +38,10 @@ class AssetsClass extends ModulloClass
     /**
      * @throws Exception
      */
-    public function createAsset(object $user, string $asset_name, string $asset_url, string $type){
+    public function createAsset(string $tenantId, string $asset_name, string $asset_url, string $type){
         try {
             $type = $this->deterMineFileType(strtolower($type));
-            $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+            $tenant = $this->tenants->newQuery()->where('id', $tenantId)->first();
             if (!$tenant) {
                 throw new ResourceNotFoundException('unfortunately the tenant could not found');
             }
@@ -91,9 +91,9 @@ class AssetsClass extends ModulloClass
         return response()->fetch("Asset fetched successfully",$resource,"asset");
 
     }
-    public function fetchAssets(object $user)
+    public function fetchAssets(string $tenantId)
     {
-        $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+        $tenant = $this->tenants->newQuery()->where('id', $tenantId)->first();
         if (!$tenant) {
             throw new ResourceNotFoundException('unfortunately the tenant could not found');
         }

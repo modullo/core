@@ -47,8 +47,8 @@ class LessonsClass extends ModulloClass
 
 
 
-    public function fetchAllLessons(object $user,string $search,?string $moduleId = null, ?string $courseId = null,int $limit = 100){
-        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+    public function fetchAllLessons(string $tenantId,string $search,?string $moduleId = null, ?string $courseId = null,int $limit = 100){
+        $tenant = $this->tenants->newQuery()->where('id',$tenantId)->first();
         if (!$tenant){
             throw new ResourceNotFoundException('unfortunately the tenant could not be found');
         }
@@ -73,10 +73,10 @@ class LessonsClass extends ModulloClass
         return response()->fetch('lessons fetched successfully',$resource,'lessons');
     }
 
-    public function createNewLesson(object $user, array $data, string $moduleId) {
+    public function createNewLesson(string $tenantId, array $data, string $moduleId) {
 
         $module = $this->modules->newQuery()->where('uuid',$moduleId)->first();
-        $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+        $tenant = $this->tenants->newQuery()->where('id', $tenantId)->first();
         if (!$tenant) {
             throw new ResourceNotFoundException('unfortunately the tenant could not be found');
         }

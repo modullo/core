@@ -26,7 +26,7 @@ class CreatePermissionTables extends Migration
             $table->string('guard_name');
             $table->string('description');
             $table->string('display_name');
-            $table->enum('level',['overlord','administrative','tenant','user']);
+             $table->enum('level',['overlord','administrative','tenant','user']);
             $table->timestamps();
         });
 

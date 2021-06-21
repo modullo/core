@@ -48,11 +48,11 @@ class QuizClass extends ModulloClass
         $this->quizQuestions = new QuizQuestions;
     }
 
-    public function createQuiz(object $user, array $data)
+    public function createQuiz(string $tenantId, array $data)
     {
         $quiz = null;
-        DB::transaction(function () use ($user, $data, &$quiz) {
-            $tenant = $this->tenants->newQuery()->where('lms_user_id', $user->id)->first();
+        DB::transaction(function () use ($tenantId, $data, &$quiz) {
+            $tenant = $this->tenants->newQuery()->where('id', $tenantId)->first();
             if (!$tenant) {
                 throw new ResourceNotFoundException('unfortunately the tenant could not be found');
             }
@@ -270,9 +270,9 @@ class QuizClass extends ModulloClass
 
     }
 
-    public function getAllQuiz(object $user, int $limit)
+    public function getAllQuiz(string $tenantId, int $limit)
     {
-        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        $tenant = $this->tenants->newQuery()->where('id',$tenantId)->first();
         if (!$tenant){
             throw new ResourceNotFoundException('unfortunately the tenant could not be found');
         }

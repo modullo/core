@@ -8,6 +8,7 @@ use App\Exceptions\ResourceNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\Lms\Courses;
 use App\Models\Lms\Modules;
+use App\Models\Lms\Tenants;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
@@ -17,27 +18,32 @@ class ModulesController extends Controller
     private ModulesClass $modulesClass;
     private Courses $courses;
     private Modules $modules;
+    private Tenants $tenants;
 
     public function __construct()
     {
         $this->modulesClass = new ModulesClass;
         $this->courses = new Courses;
         $this->modules = new Modules;
+        $this->tenants = new Tenants;
     }
 
     public function index(Request $request,string $courseId){
         $search = $request->query('search') ?? '';
         $limit = $request->query('limit', 100);
         $user = $request->user();
-        return $this->modulesClass->fetchAllModules($user,$search,$courseId,$limit);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->modulesClass->fetchAllModules($tenant->id,$search,$courseId,$limit);
     }
 
     public function all(Request $request){
         $search = $request->query('search') ?? '';
         $limit = $request->query('limit', 100);
         $user = $request->user();
-
-        return $this->modulesClass->fetchAllModules($user,$search,null,$limit);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->modulesClass->fetchAllModules($tenant->id,$search,null,$limit);
     }
 
     /**
@@ -60,8 +66,9 @@ class ModulesController extends Controller
             throw new CustomValidationFailed('the module number has already been taken for the course');
         }
         $user = $request->user();
-
-        return $this->modulesClass->createModule($user,$request->all(), $course);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->modulesClass->createModule($tenant->id,$request->all(), $course);
     }
 
 

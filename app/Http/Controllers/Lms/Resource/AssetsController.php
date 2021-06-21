@@ -4,18 +4,22 @@ namespace App\Http\Controllers\Lms\Resource;
 
 use App\Classes\LMS\Resource\AssetsClass;
 use App\Http\Controllers\Controller;
+use App\Models\Lms\Tenants;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class AssetsController extends Controller
 {
     protected AssetsClass $assetsClass;
+    protected Tenants $tenants;
 
 
     public function __construct()
     {
         $this->assetsClass = new AssetsClass;
+        $this->tenants = new Tenants;
     }
 
     /**
@@ -34,7 +38,9 @@ class AssetsController extends Controller
         //get file type from file url send
         $exploded_url = explode(".", $request->asset_url);
         $type = $exploded_url[count($exploded_url) - 1];
-        return $this->assetsClass->createAsset($user, $request->asset_name, $request->asset_url, $type);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->assetsClass->createAsset($tenant->id, $request->asset_name, $request->asset_url, $type);
     }
 
     /**
@@ -57,7 +63,9 @@ class AssetsController extends Controller
     public function all(Request $request)
     {
         $user = $request->user();
-        return $this->assetsClass->fetchAssets($user);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->assetsClass->fetchAssets($tenant->id);
     }
 
     public function single(string $assetId)

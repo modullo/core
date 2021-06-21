@@ -35,12 +35,8 @@ class ProgramClass extends ModulloClass
     }
 
 
-    public function fetchAllPrograms(string $search,int $limit, object $user){
-        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
-        if (!$tenant){
-            throw new ResourceNotFoundException('unfortunately the tenant could not be found');
-        }
-
+    public function fetchAllPrograms(string $search,int $limit, string $tenantId){
+        $tenant = $this->tenants->newQuery()->where('id',$tenantId)->first();
         if (empty($search)) {
             $builder = $this->programs->newQuery()->where('tenant_id',$tenant->id)
                 ->latest()->paginate($limit);
@@ -59,9 +55,9 @@ class ProgramClass extends ModulloClass
         return response()->fetch('all programs fetched successfully', $resource, 'programs');
     }
 
-    public function createProgram(array $data, object $user){
+    public function createProgram(array $data, string $tenantId){
         $program = null;
-        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        $tenant = $this->tenants->newQuery()->where('id',$tenantId)->first();
         if (!$tenant){
             throw new NotFoundException('unfortunately the tenant could not be found');
         }

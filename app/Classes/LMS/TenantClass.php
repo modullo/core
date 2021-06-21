@@ -52,7 +52,7 @@ class TenantClass extends ModulloClass
         if (!$newTenant){
             throw new \LogicException('system is unable to create a tenant');
         }
-        $newTenant = new TenantsResource($newTenant);
+        $newTenant = new UserResource($lmsUser);
         return \response()->created('tenant created successfully',$newTenant,'tenant');
     }
 

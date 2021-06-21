@@ -91,7 +91,6 @@ Route::group(['prefix' => 'v1'], static function () {
                 Route::get('{moduleId}','ModulesController@single');
             });
 
-
             Route::group(['prefix' => 'lessons'],function(){
                 Route::get('all/{moduleId}','LessonsController@index');
                 Route::get('','LessonsController@all');
@@ -124,6 +123,21 @@ Route::group(['prefix' => 'v1'], static function () {
 
 
             });
+
+            Route::group(['namespace' => 'Learners','prefix' => 'learner'],function(){
+
+                Route::group(['prefix' => 'courses'],function(){
+                    Route::get('{programId}','CoursesController@index');
+                    Route::get('','CoursesController@all');
+                });
+
+                Route::group(['prefix' => 'programs'],function(){
+                    Route::get('','ProgramsController@index');
+                });
+            });
+
+
+
 
         });
 

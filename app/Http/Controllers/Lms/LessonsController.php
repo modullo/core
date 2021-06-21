@@ -7,6 +7,7 @@ use App\Exceptions\ResourceNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Models\Lms\Lessons;
 use App\Models\Lms\Modules;
+use App\Models\Lms\Tenants;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use LogicException;
@@ -18,12 +19,14 @@ class LessonsController extends Controller
     private LessonsClass $lessonsClass;
     private Lessons $lessons;
     private Modules $modules;
+    private Tenants $tenants;
 
     public function __construct()
     {
         $this->lessonsClass = new LessonsClass;
         $this->lessons = new Lessons;
         $this->modules = new Modules;
+        $this->tenants = new Tenants;
     }
 
     /**
@@ -50,7 +53,9 @@ class LessonsController extends Controller
             throw new LogicException('the lesson number has already been taken for the module ');
         }
         $user = $request->user();
-        return $this->lessonsClass->createNewLesson($user, $request->all(), $moduleId);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->lessonsClass->createNewLesson($tenant->id, $request->all(), $moduleId);
     }
 
     public function index(Request $request, string $moduleId)
@@ -58,8 +63,9 @@ class LessonsController extends Controller
         $search = $request->query('search') ?? '';
         $limit = $request->query('limit', 100);
         $user = $request->user();
-
-        return $this->lessonsClass->fetchAllLessons($user,$search, $moduleId,$request->courseId, $limit);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->lessonsClass->fetchAllLessons($tenant->id,$search, $moduleId,$request->courseId, $limit);
     }
 
     public function all(Request $request)
@@ -67,7 +73,9 @@ class LessonsController extends Controller
         $search = $request->query('search') ?? '';
         $limit = $request->query('limit', 100);
         $user = $request->user();
-        return $this->lessonsClass->fetchAllLessons($user,$search, null,null, $limit);
+        $tenant = $this->tenants->newQuery()->where('lms_user_id',$user->id)->first();
+        if (!$tenant) throw new ResourceNotFoundException('tenant could not be found');
+        return $this->lessonsClass->fetchAllLessons($tenant->id,$search, null,null, $limit);
     }
 
     /**
