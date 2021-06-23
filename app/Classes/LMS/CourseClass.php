@@ -69,6 +69,7 @@ class CourseClass extends ModulloClass
                 break;
         }
         $builder = $builder
+            ->with('program')
             ->oldest('created_at')
             ->paginate($limit);
         $resource = CourseResource::collection($builder);
