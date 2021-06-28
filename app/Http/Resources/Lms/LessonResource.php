@@ -2,6 +2,10 @@
 
 namespace App\Http\Resources\Lms;
 
+use App\Models\Lms\Learners;
+use App\Models\Lms\LessonTracker;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class LessonResource extends JsonResource
@@ -10,12 +14,28 @@ class LessonResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
-    public function toArray($request): array
+
+    protected LessonTracker $lessonTracker;
+    protected Learners $learners;
+
+  /**
+   * LessonResource constructor.
+   */
+
+  public function __construct($resource)
+  {
+    parent::__construct($resource);
+    $this->lessonTracker = new LessonTracker;
+    $this->learners = new Learners;
+  }
+
+  public function toArray($request): array
     {
-        return [
+      $user = $request->user();
+        $response =  [
             "id" => $this->uuid,
             "module_id" => new ModulesResource($this->whenLoaded('module')),
             "title" => $this->title,
@@ -38,5 +58,23 @@ class LessonResource extends JsonResource
             'created_at' => (string) $this->created_at->toIso8601String(),
             'updated_at' => (string) $this->updated_at->toIso8601String(),
         ];
+
+        if ($user->getRoleNames()[0] === 'lms_learner'){
+          $mergers = [
+            'completed' => $this->checkCompletion($user)
+          ];
+          $response = array_merge($response,$mergers);
+        }
+
+        return $response;
+    }
+
+    protected function checkCompletion(object $user): bool
+    {
+      $learnerId = $user->learner->id;
+      return $this->lessonTracker->newQuery()
+        ->where('lesson_id',$this->id)
+        ->where('learner_id',$learnerId)
+        ->exists();
     }
 }

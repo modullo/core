@@ -21,4 +21,5 @@ class Lessons extends Model
         return $this->belongsTo(Quiz::class,'resource_id');
     }
 
+
 }

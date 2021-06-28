@@ -135,6 +135,10 @@ Route::group(['prefix' => 'v1'], static function () {
                 Route::group(['prefix' => 'programs'],function(){
                     Route::get('','ProgramsController@index');
                 });
+
+                Route::group(['prefix' => 'lessons'],function(){
+                    Route::post('complete/{lessonId}','LessonsController@markComplete');
+                });
             });
 
 

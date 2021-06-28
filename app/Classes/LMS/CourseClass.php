@@ -122,7 +122,7 @@ class CourseClass extends ModulloClass
     public function showCourse(string $courseId)
     {
         $filter = $this->courses->newQuery()->where('uuid',$courseId);
-        $course = $filter->with('program')->first();
+        $course = $filter->with(['program','modules','modules.lessons'])->first();
         if ($course) {
             $resource = new CourseResource($course);
             return response()->fetch("course fetched successfully", $resource, "course");

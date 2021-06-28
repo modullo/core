@@ -7,7 +7,10 @@ namespace Database\Seeders;
 use App\Exceptions\ResourceNotFoundException;
 use App\Models\Lms\Learners;
 use App\Models\Lms\Tenants;
+use App\Models\Lms\Courses;
+use App\Models\Lms\LearnerCourses;
 use App\Models\Lms\User;
+use Carbon\Carbon;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -36,7 +39,29 @@ class LearnerSeeder extends Seeder
             'phone_number' => '00000000',
             'gender' => 'female',
         ]);
+        $courses = Courses::where('tenant_id',$tenant->id)->get();
+        foreach($courses as $course){
+            if($course->tenant_id === $learner->tenant_id){
+            $this->subscribeToCourse($learner->id,$course->id,$learner->tenant_id,$course->program_id);
+            }
+        }
 
+    }
+
+    protected function subscribeToCourse(string $learnerId, string $courseId, string $tenantId, 
+        string $programId ){
+        LearnerCourses::updateOrCreate([
+            'tenant_id' => $tenantId,
+            'course_id' => $courseId,
+            'learner_id' => $learnerId,
+        ],
+        [
+            'tenant_id' => $tenantId,
+            'course_id' => $courseId,
+            'learner_id' => $learnerId,
+             'program_id' => $programId,
+            'started_date' => Carbon::now(),
+        ]);
     }
 
 }

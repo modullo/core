@@ -21,6 +21,7 @@ class LessonsController extends Controller
     private Modules $modules;
     private Tenants $tenants;
 
+
     public function __construct()
     {
         $this->lessonsClass = new LessonsClass;
@@ -108,6 +109,7 @@ class LessonsController extends Controller
     {
         return $this->lessonsClass->showDetails($lessonId);
     }
+
 
 
 }

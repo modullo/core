@@ -21,4 +21,9 @@ class Courses extends Model
     {
         return $this->belongsTo(Tenants::class);
     }
+
+    public function modules(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Modules::class,'course_id')->orderBy('module_number');
+    }
 }

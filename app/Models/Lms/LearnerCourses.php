@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class LearnerCourses extends Model
 {
     use SoftDeletes;
-    protected $table = 'lms_learner_courses';
+    protected $table = 'lms_learners_courses';
 
     protected $guarded = [];
 }

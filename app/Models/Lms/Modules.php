@@ -13,7 +13,13 @@ class Modules extends Model
 
     protected $table = 'lms_modules';
 
-    public function course(){
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(Courses::class);
+    }
+
+    public function lessons(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Lessons::class,'module_id')->orderBy('lesson_number');
     }
 }

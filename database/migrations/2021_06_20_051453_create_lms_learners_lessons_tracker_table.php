@@ -22,6 +22,7 @@ class CreateLmsLearnersLessonsTrackerTable extends Migration
             $table->foreign('course_id')->references('id')->on('lms_courses')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('learner_id')->references('id')->on('lms_learners')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('lesson_id')->references('id')->on('lms_lessons')->onDelete('cascade')->onUpdate('cascade');
+            $table->boolean('status')->default(false);
             $table->boolean('completed')->default(false);
             $table->timestamp('completion_time')->nullable();
             $table->softDeletes();

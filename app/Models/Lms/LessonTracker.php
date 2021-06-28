@@ -10,7 +10,9 @@ class LessonTracker extends Model
 
     use SoftDeletes;
 
-    protected $table = 'lms_lessons_tracker';
+    protected $table = 'lms_learners_lessons_tracker';
 
     protected $guarded = [];
+
+
 }

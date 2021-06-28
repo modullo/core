@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Lms;
 
-use App\Http\Resources\LessonResource;
+use App\Http\Resources\Lms\LessonResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ModulesResource extends JsonResource
@@ -18,6 +18,7 @@ class ModulesResource extends JsonResource
         return [
             "id" => $this->uuid,
             "course" => new CourseResource($this->whenLoaded('course')),
+            "lessons" => LessonResource::collection($this->whenLoaded('lessons')),
             "title" => $this->title,
             "description" => $this->description,
             "module_number" => $this->module_number,
