@@ -9,6 +9,8 @@ use App\Models\Lms\LearnerPrograms;
 use App\Models\Lms\Learners;
 use App\Models\Lms\Lessons;
 use App\Models\Lms\LessonTracker;
+use App\Models\Lms\LmsNotes;
+use App\Models\Lms\LmsQuizReport;
 use App\Models\Lms\Modules;
 use App\Models\Lms\Programs;
 use App\Models\Lms\Quiz;
@@ -20,38 +22,37 @@ use Dusterio\LumenPassport\LumenPassport;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
-{
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        User::observe(UuidObserver::class);
-        Tenants::observe(UuidObserver::class);
-        Programs::observe(UuidObserver::class);
-        Courses::observe(UuidObserver::class);
-        Modules::observe(UuidObserver::class);
-        Assets::observe(UuidObserver::class);
-        Lessons::observe(UuidObserver::class);
-        Quiz::observe(UuidObserver::class);
-        Quiz::observe(UuidObserver::class);
-        QuizQuestions::observe(UuidObserver::class);
+class AppServiceProvider extends ServiceProvider {
+	/**
+	 * Register any application services.
+	 *
+	 * @return void
+	 */
+	public function boot() {
+		User::observe(UuidObserver::class);
+		Tenants::observe(UuidObserver::class);
+		Programs::observe(UuidObserver::class);
+		Courses::observe(UuidObserver::class);
+		Modules::observe(UuidObserver::class);
+		Assets::observe(UuidObserver::class);
+		Lessons::observe(UuidObserver::class);
+		Quiz::observe(UuidObserver::class);
+		Quiz::observe(UuidObserver::class);
+		QuizQuestions::observe(UuidObserver::class);
 
-        Learners::observe(UuidObserver::class);
-        LearnerCourses::observe(UuidObserver::class);
-        LearnerPrograms::observe(UuidObserver::class);
-        LessonTracker::observe(UuidObserver::class);
-        // Somewhere in your application service provider or bootstrap process
-        LumenPassport::allowMultipleTokens();
-        # register the routes
-        $this->app['path.config'] = base_path('config');
-    }
+		Learners::observe(UuidObserver::class);
+		LearnerCourses::observe(UuidObserver::class);
+		LearnerPrograms::observe(UuidObserver::class);
+		LessonTracker::observe(UuidObserver::class);
+		LmsQuizReport::observe(UuidObserver::class);
+		LmsNotes::observe(UuidObserver::class);
+		// Somewhere in your application service provider or bootstrap process
+		LumenPassport::allowMultipleTokens();
+		# register the routes
+		$this->app['path.config'] = base_path('config');
+	}
 
-    public function register()
-    {
-        Schema::defaultStringLength(191);
-    }
+	public function register() {
+		Schema::defaultStringLength(191);
+	}
 }

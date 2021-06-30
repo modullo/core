@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Database\Seeders;
+namespace Database\Seeders\Lms;
 
 
 use App\Exceptions\ResourceNotFoundException;
@@ -48,7 +48,7 @@ class LearnerSeeder extends Seeder
 
     }
 
-    protected function subscribeToCourse(string $learnerId, string $courseId, string $tenantId, 
+    protected function subscribeToCourse(string $learnerId, string $courseId, string $tenantId,
         string $programId ){
         LearnerCourses::updateOrCreate([
             'tenant_id' => $tenantId,

@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Lms;
 
-use Illuminate\Http\Request;
-
-class LearnersController extends Controller
-{
-    //
+class LearnersController extends Controller {
+	// find all classes built in learnerclass
 }

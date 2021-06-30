@@ -5,7 +5,7 @@ namespace App\Classes\Lms;
 
 
 use App\Exceptions\ResourceNotFoundException;
-use App\Http\Resources\LearnersResource;
+use App\Http\Resources\Lms\LearnersResource;
 use App\Http\Resources\Lms\TenantsResource;
 use App\Http\Resources\Lms\UserResource;
 use App\Models\Lms\Learners;

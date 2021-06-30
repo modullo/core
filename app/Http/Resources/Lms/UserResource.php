@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Lms;
 
-use App\Http\Resources\LearnersResource;
+use App\Http\Resources\Lms\LearnersResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

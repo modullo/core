@@ -20,7 +20,7 @@
   use Illuminate\Database\Eloquent\Model;
   use Illuminate\Support\Facades\DB;
   use LogicException;
-  use function response;
+  use App\Jobs\Lms\CourseCompletionHook;
 
   class LessonsClass extends ModulloClass
   {
@@ -237,7 +237,7 @@
 
     private function checkForEndOfCourse()
     {
-
+      dispatch(new CourseCompletionHook());
     }
 
   }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Database\Seeders;
+namespace Database\Seeders\Lms;
 
 
 use App\Models\Lms\Tenants;
